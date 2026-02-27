@@ -1,0 +1,29 @@
+@font-face{
+    font-family: Formula1;
+    src: url("assets/Formula1-Regular_web_0.ttf");
+
+}
+
+@font-face {
+    font-family: Formula1Bold;
+    src: url("assets/Formula1-Bold_web_0.ttf");
+}
+
+@font-face {
+    font-family: TitiliumReg;
+    src: url("assets/TitilliumWeb-Regular.ttf");
+}
+
+@font-face {
+    font-family: TitiliumBold;
+    src: url("assets/TitilliumWeb-Bold.ttf");
+}
+
+@import "tailwindcss";
+
+@theme{
+    --font-formula1: Formula1, "sans-serif";
+    --font-formula1bold: Formula1Bold, "sans-serif";
+    --font-titiliumreg: TitiliumReg, "sans-serif";
+    --font-titiliumbold: TitiliumBold, "sans-serif";
+}
