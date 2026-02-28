@@ -100,10 +100,13 @@ L 68.027745 219.315652
 
   `;
 
-export default function Session({ activeYear, activeGP, activeSession }) {
+export default function Session({   activeYear, activeGP, activeSession }) {
   const [newData, setData] = useState([]);
   const [new_mapdata, set_mapData] = useState([]);
   const [fastestTimes, setFastestTimes] = useState({ s1: 0, s2: 0, s3: 0 });
+  const [sessionKey, setSessionKey] = useState(null);
+  const [fastestDriverHeadshot, setFastestDriverHeadshot] = useState(null);
+
 
   const data =
     newData.length > 0
@@ -291,7 +294,7 @@ export default function Session({ activeYear, activeGP, activeSession }) {
       fetch("/data/Laps.csv").then((res) => res.text()),
       fetch("/data/Team.csv").then((res) => res.text()),
     ]).then(
-      ([circuitCsv, sessionCsv, resultsCsv, driversCsv, lapsCsv, teamsCsv]) => {
+      async ([circuitCsv, sessionCsv, resultsCsv, driversCsv, lapsCsv, teamsCsv]) => {
         const circuits = Papa.parse(circuitCsv, { header: true }).data;
         const sessions = Papa.parse(sessionCsv, { header: true }).data;
         const allResults = Papa.parse(resultsCsv, { header: true }).data;
@@ -325,7 +328,6 @@ export default function Session({ activeYear, activeGP, activeSession }) {
             sector3: circuit.Sector3,
           },
         ]);
-
         const filteredResults = allResults
           .filter((r) => r.SessionID === session.ID)
           .map((r, i) => {
@@ -464,6 +466,40 @@ export default function Session({ activeYear, activeGP, activeSession }) {
         console.log(s3Info);
         const fastestLapInfo = getDriverInfo(fastestLap);
 
+        const fetchOpenF1Drivers = async () => {
+          console.log("Fetching session key...");
+          
+          const response = await fetch(
+            `https://api.openf1.org/v1/sessions?country_Name=${encodeURIComponent(circuit.Country)}&year=${activeYear}&session_name=${encodeURIComponent(activeSession)}`
+          );
+          const sessionsData = await response.json();
+
+          if (!sessionsData || sessionsData.length === 0) {
+            console.warn("No sessions found from OpenF1 API");
+            return;
+          }
+
+          const sessionKey = sessionsData[0].session_key;
+          console.log("Session key:", sessionKey);
+
+          // Store in state if you still need it elsewhere
+          setSessionKey(sessionKey);
+
+          // ✅ Fetch fastest driver immediately here
+          const fastestDriverNumber = 1; // Replace with your fastest lap driver number if needed
+          const driverResponse = await fetch(
+            `https://api.openf1.org/v1/drivers?name_acronym=${fastestLapInfo.driver}&session_key=${sessionKey}`
+          );
+          const driverData = await driverResponse.json();
+
+          console.log("Fastest driver info:", driverData[0]);
+          // You can also set this in state:
+          setFastestDriverHeadshot(driverData[0].headshot_url);
+        };
+
+        const fastestDriverInfo = await fetchOpenF1Drivers();
+        console.log(fastestDriverInfo);
+
         let s1Color = s1Info.color;
         let s2Color = s2Info.color;
         let s3Color = s3Info.color;
@@ -495,7 +531,7 @@ export default function Session({ activeYear, activeGP, activeSession }) {
           s1: parseF1Time(fastestS1Lap.Sector1Time),
           s2: parseF1Time(fastestS2Lap.Sector2Time),
           s3: parseF1Time(fastestS3Lap.Sector3Time),
-          fastestLap: parseF1Time(fastestLap.LapTimeSeconds),
+          fastestLap: parseFloat(fastestLap.LapTimeSeconds),
 
           s1Driver: s1Info.driver,
           s2Driver: s2Info.driver,
@@ -561,7 +597,7 @@ export default function Session({ activeYear, activeGP, activeSession }) {
               </div>
             </div>
 
-            <p className="font-formula1 text-sm text-right font-formula1">
+            <p className="font-formula1bold text-sm text-right font-formula1">
               {row.gap}
             </p>
           </div>
@@ -762,36 +798,29 @@ export default function Session({ activeYear, activeGP, activeSession }) {
 
     {/* Content Layer */}
   <div className="relative flex h-full w-full items-end p-1">
+    
+    <div
+      className="absolute w-32 h-32 translate-x-12"
+      style={{
+        backgroundImage: `url(${fastestDriverHeadshot})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    />
+
       <div className="backdrop-blur-md bg-white/2 border border-white/20 rounded-xl px-3 py-1 shadow-lg">
         <p className="font-formula1bold text-[22px] uppercase tracking-tighter">
           {fastestTimes.fastestLapDriver || "Unknown Driver"}
         </p>
       </div>
-      <div className="flex flex-col items-center gap-2 pb-17">
-        <div className="rounded-full shadow-sm bg-[#2d2d35] px-3">
-          <p className="font-titiliumreg p-0.5">
-            {fastestTimes.fastestLapDriver || "—"} -{" "}
-            {fastestTimes.fastestLapTeam || "—"}
-          </p>
-        </div>
-
-        <div className="flex gap-2">
-          <div className="rounded-full shadow-sm bg-[#2d2d35] px-3 flex items-center">
-            <p className="font-titiliumbold p-0.5">
-              Lap {fastestTimes.fastestLapLap || "-"}
-            </p>
-          </div>
-
-          <div className="rounded-full shadow-sm bg-[#2d2d35] px-3 flex items-center">
-            <p className="font-titiliumbold p-0.5">
-              {fastestTimes.fastestLap
-                ? fastestTimes.fastestLap.toFixed(3)
-                : "0.000"}
-              s
-            </p>
-          </div>
-        </div>
-      </div>
+      <div className="flex flex-col justify-center items-center gap-1 pl-50">
+    <p className="font-formula1bold text-[30px] text-white">
+      Lap {fastestTimes.fastestLapLap || "-"}
+    </p>
+    <p className="font-formula1bold text-[53px] text-white">
+      {fastestTimes.fastestLap ? fastestTimes.fastestLap.toFixed(3) : "0.000"}s
+    </p>
+  </div>
     </div>
   </div>
 ))}
