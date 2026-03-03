@@ -11,6 +11,7 @@ function App() {
   const [activeSession, setActiveSession] = useState(null);
   const [gps, setGPS] = useState([]);
   const [sessions, setSessions] = useState([]);
+  const [laps, setLaps] = useState([]);
 
   return (
     <div className = "pt-25 min-h-screen bg-[#14131a] text-white overflow-hidden">
@@ -26,8 +27,12 @@ function App() {
         activeYear={activeYear}
         activeGP={activeGP}
         activeSession={activeSession}
+        setLaps={setLaps}
       />
-      <StatFeature1 />
+      <StatFeature1 
+        laps={laps}
+        activeYear={activeYear}
+      />
       <StatFeature2 />
       <StatFeature3 />
     </div>

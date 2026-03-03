@@ -10,282 +10,21 @@ import {
   Customized,
 } from "recharts";
 
-const trackPath = `
-M 321.64977 89.166026 
-
-L 141.927761 89.423461 
-L 141.670326 87.058274 
-L 141.026738 84.258666 
-L 140.286611 82.038286 
-L 139.192511 79.463934 
-L 137.792707 76.93785 
-L 135.958481 74.073882 
-L 134.574766 72.271835 
-L 132.837078 70.453699 
-L 130.391442 68.345947 
-L 128.589395 67.026591 
-L 127.012604 66.01294 
-L 125.114019 64.967109 
-L 121.316849 63.406408 
-L 117.197884 62.457115 
-L 114.929236 62.408846 
-L 114.028212 62.521474 
-L 112.338793 63.004165 
-L 111.40559 63.422497 
-L 110.118414 64.3557 
-L 109.426556 65.256724 
-L 108.927776 66.366913 
-L 108.622071 67.380565 
-L 108.058931 68.860818 
-L 107.077459 70.180174 
-L 104.615735 71.547798 
-L 103.473365 71.676516 
-L 102.073561 71.515619 
-L 100.142796 70.823762 
-L 97.77761 69.552675 
-L 94.672297 67.814987 
-L 92.773711 67.026591 
-L 91.920957 66.801335 
-L 90.553332 66.608259 
-L 88.976541 66.656528 
-L 87.335391 67.058771 
-L 86.080394 67.750628 
-L 85.452895 68.362037 
-L 84.921935 69.230881 
-L 84.68059 69.922738 
-L 84.471423 71.885682 
-L 84.567962 75.81157 
-L 84.873666 91.161149 
-L 85.018473 97.629211 
-L 84.938025 118.465379 
-L 84.825397 120.766207 
-L 84.455334 124.225494 
-L 83.747387 128.26401 
-L 83.02335 131.304964 
-L 81.92925 134.587264 
-L 80.159382 138.722318 
-L 78.984834 140.910518 
-L 77.456312 143.195256 
-L 76.217405 144.772048 
-L 73.385616 147.652105 
-L 71.615749 149.116268 
-L 69.314921 150.757418 
-L 67.142811 152.092863 
-L 65.356853 153.058246 
-L 60.417314 155.375163 
-L 51.117464 159.687204 
-L 49.218879 160.652587 
-L 46.467539 162.245468 
-L 44.713761 163.452195 
-L 40.884412 166.782764 
-L 36.942434 171.336151 
-L 35.896603 172.816404 
-L 34.207184 175.632102 
-L 32.131612 180.265938 
-L 31.11796 183.499968 
-L 29.138927 192.622831 
-L 28.447069 196.886603 
-L 28.463159 197.980703 
-L 28.849312 199.364418 
-L 29.187196 199.911468 
-L 30.780077 201.4239 
-L 32.485585 202.244475 
-L 37.618201 203.6121 
-L 41.093578 205.156712 
-L 45.9044 207.45754 
-L 50.940477 209.822726 
-L 55.767389 212.397079 
-L 68.027745 219.315652 
-
-
-  `;
-
-export default function Session({   activeYear, activeGP, activeSession }) {
+export default function Session({ activeYear, activeGP, activeSession, setLaps }) {
   const [newData, setData] = useState([]);
   const [new_mapdata, set_mapData] = useState([]);
   const [fastestTimes, setFastestTimes] = useState({ s1: 0, s2: 0, s3: 0 });
   const [sessionKey, setSessionKey] = useState(null);
   const [fastestDriverHeadshot, setFastestDriverHeadshot] = useState(null);
 
+  const safeYear = activeYear || "2025";
+  const safeGP = activeGP || "Yas Marina Circuit"; 
+  const safeSession = activeSession || "Race";
 
-  const data =
-    newData.length > 0
-      ? newData
-      : [
-          {
-            pos: "1",
-            driver: "VER",
-            team: "Red Bull",
-            color: "#0600ef",
-            gap: "5167.469",
-          },
-          {
-            pos: "2",
-            driver: "PIA",
-            team: "McLaren",
-            color: "#FF8000",
-            gap: "+12.594",
-            active: true,
-          },
-          {
-            pos: "3",
-            driver: "NOR",
-            team: "McLaren",
-            color: "#FF8000",
-            gap: "+16.572",
-          },
-          {
-            pos: "4",
-            driver: "LEC",
-            team: "Ferrari",
-            color: "#e80020",
-            gap: "+23.279",
-            active: true,
-          },
-          {
-            pos: "5",
-            driver: "RUS",
-            team: "Mercedes",
-            color: "#27f4d2",
-            gap: "+48.563",
-          },
-          {
-            pos: "6",
-            driver: "ALO",
-            team: "Aston Martin",
-            color: "#00665f",
-            gap: "+67.562",
-            active: true,
-          },
-          {
-            pos: "7",
-            driver: "OCO",
-            team: "Haas F1 Team",
-            color: "#b6babd",
-            gap: "+69.876",
-          },
-          {
-            pos: "8",
-            driver: "HAM",
-            team: "Ferrari",
-            color: "#e80020",
-            gap: "+72.67",
-            active: true,
-          },
-          {
-            pos: "9",
-            driver: "HUL",
-            team: "Sauber",
-            color: "#00e700",
-            gap: "+79.014",
-          },
-          {
-            pos: "10",
-            driver: "STR",
-            team: "Aston Martin",
-            color: "#00665f",
-            gap: "+79.523",
-            active: true,
-          },
-          {
-            pos: "11",
-            driver: "BOR",
-            team: "Sauber",
-            color: "#00e700",
-            gap: "+81.043",
-          },
-          {
-            pos: "12",
-            driver: "BEA",
-            team: "Haas F1 Team",
-            color: "#b6babd",
-            gap: "+81.166",
-            active: true,
-          },
-          {
-            pos: "13",
-            driver: "SAI",
-            team: "Williams",
-            color: "#00a0dd",
-            gap: "+82.158",
-          },
-          {
-            pos: "14",
-            driver: "TSU",
-            team: "Red Bull",
-            color: "#364aa9",
-            gap: "+83.794",
-            active: true,
-          },
-          {
-            pos: "15",
-            driver: "ANT",
-            team: "Mercedes",
-            color: "#27F4D2",
-            gap: "+84.399",
-          },
-          {
-            pos: "16",
-            driver: "ALB",
-            team: "Williams",
-            color: "#00a0dd",
-            gap: "+1L",
-            active: true,
-          },
-          {
-            pos: "17",
-            driver: "HAD",
-            team: "RB F1 Team",
-            color: "#364aa9",
-            gap: "+1L",
-          },
-          {
-            pos: "18",
-            driver: "LAW",
-            team: "Red Bull",
-            color: "#0600ef",
-            gap: "+1L",
-            active: true,
-          },
-          {
-            pos: "19",
-            driver: "GAS",
-            team: "Alpine F1 Team",
-            color: "#ff87bc",
-            gap: "+1L",
-          },
-          {
-            pos: "20",
-            driver: "COL",
-            team: "Alpine F1 Team",
-            color: "#ff87bc",
-            gap: "+1L",
-            active: true,
-          },
-        ];
-
-  const map_data =
-    new_mapdata.length > 0
-      ? new_mapdata
-      : [
-          {
-            name: "Formula 1 Abu Dhabi Grand Prix",
-            circuit: "Yas Marina Circuit",
-            country: "UAE",
-            city: "Abu Dhabi",
-            corners: "16",
-            length: "5.281",
-            temperature: "25.3",
-            date: "07/12/2025 13:00",
-          },
-        ];
-
-  const displayData = newData.length > 0 ? newData : data;
-  const display_mapData = new_mapdata.length > 0 ? new_mapdata : map_data;
+  const displayData = newData;
+  const display_mapData = new_mapdata;
 
   useEffect(() => {
-    if (!activeSession || !activeGP || !activeYear) return;
-
     Promise.all([
       fetch("/data/Circuit.csv").then((res) => res.text()),
       fetch("/data/Session.csv").then((res) => res.text()),
@@ -302,14 +41,14 @@ export default function Session({   activeYear, activeGP, activeSession }) {
         const allTeams = Papa.parse(teamsCsv, { header: true }).data;
         const allLaps = Papa.parse(lapsCsv, { header: true }).data;
 
-        const circuit = circuits.find((c) => c.Name === activeGP);
+        const circuit = circuits.find((c) => c.Name === safeGP);
         if (!circuit) return;
 
         const session = sessions.find(
           (s) =>
-            s.CircuitID === circuit.ID &&
-            s.DateOfSession.includes(activeYear) &&
-            s.Type === activeSession,
+            s.CircuitID?.toString().trim() === circuit.ID?.toString().trim() &&
+            s.DateOfSession.includes(safeYear) &&
+            s.Type === safeSession
         );
         if (!session) return;
 
@@ -328,11 +67,12 @@ export default function Session({   activeYear, activeGP, activeSession }) {
             sector3: circuit.Sector3,
           },
         ]);
+
         const filteredResults = allResults
           .filter((r) => r.SessionID === session.ID)
           .map((r, i) => {
             const driverInfo = allDrivers.find(
-              (d) => d.DriverName === r.Driver && activeYear === d.Year,
+              (d) => d.DriverName === r.Driver && safeYear === d.Year,
             );
             const teamInfo = driverInfo
               ? allTeams.find((t) => t.ID === driverInfo.TeamID)
@@ -370,9 +110,47 @@ export default function Session({   activeYear, activeGP, activeSession }) {
           return hours * 3600 + minutes * 60 + seconds;
         };
 
-        const sessionLaps = allLaps.filter((l) => l.SessionID === session.ID);
+        console.log("Filtered Results:", filteredResults);
 
-        // Default lap to prevent crashes if no laps exist
+        const sessionLaps = allLaps.filter((l) => l.SessionID === session.ID);
+        const driverMap = Object.fromEntries(
+  allDrivers.map((d) => [d.ID.toString(), d])
+);
+
+const teamMap = Object.fromEntries(
+  allTeams.map((t) => [t.ID.toString(), t])
+);
+
+// group laps by driver
+const tyreData = {};
+
+sessionLaps.forEach((lap) => {
+  const driver = driverMap[lap.DriverID];
+  if (!driver) return;
+
+  const driverName = driver.DriverName.split(" ")
+    .at(-1)
+    .substring(0, 3)
+    .toUpperCase();
+
+  if (!tyreData[driverName]) {
+    tyreData[driverName] = [];
+  }
+
+  tyreData[driverName].push({
+    lap: Number(lap.LapNumber),
+    tyre: lap.TyreCompound,
+  });
+});
+
+const chartData = Object.entries(tyreData).map(([driver, laps]) => ({
+  driver,
+  laps: laps.sort((a, b) => a.lap - b.lap),
+}));
+
+        setLaps(chartData);
+        console.log(chartData);
+
         const defaultLap = {
           Sector1Time: "0:0:0.0",
           Sector2Time: "0:0:0.0",
@@ -431,13 +209,11 @@ export default function Session({   activeYear, activeGP, activeSession }) {
               )
             : defaultLap;
 
-        // After calculating fastestS1Lap
         const getDriverInfo = (lap) => {
           if (!lap || !lap.DriverID)
             return { driver: "UNK", fullname: "Unknown Driver", team: "TEAM", color: "#FFFFFF" };
 
-          // Convert types to string to be safe
-          const driverID = lap.DriverID.toString().trim(); // ensure string & trim spaces
+          const driverID = lap.DriverID.toString().trim(); 
           console.log(driverID);
           const driver = allDrivers.find((d) => d.ID.toString() === driverID);
           console.log(driver);
@@ -469,8 +245,20 @@ export default function Session({   activeYear, activeGP, activeSession }) {
         const fetchOpenF1Drivers = async () => {
           console.log("Fetching session key...");
           
+          if (circuit.Country === "UK") {
+            circuit.Country = "United Kingdom";
+          }
+
+          else if (circuit.Country === "USA") {
+            circuit.Country = "United States";
+          }
+
+          else if (circuit.Country === "UAE") {
+            circuit.Country = "United Arab Emirates";
+          }
+
           const response = await fetch(
-            `https://api.openf1.org/v1/sessions?country_Name=${encodeURIComponent(circuit.Country)}&year=${activeYear}&session_name=${encodeURIComponent(activeSession)}`
+            `https://api.openf1.org/v1/sessions?country_Name=${encodeURIComponent(circuit.Country)}&year=${safeYear}&session_name=${encodeURIComponent(safeSession)}`
           );
           const sessionsData = await response.json();
 
@@ -482,18 +270,15 @@ export default function Session({   activeYear, activeGP, activeSession }) {
           const sessionKey = sessionsData[0].session_key;
           console.log("Session key:", sessionKey);
 
-          // Store in state if you still need it elsewhere
           setSessionKey(sessionKey);
 
-          // ✅ Fetch fastest driver immediately here
-          const fastestDriverNumber = 1; // Replace with your fastest lap driver number if needed
+          const fastestDriverNumber = 1; 
           const driverResponse = await fetch(
             `https://api.openf1.org/v1/drivers?name_acronym=${fastestLapInfo.driver}&session_key=${sessionKey}`
           );
           const driverData = await driverResponse.json();
 
           console.log("Fastest driver info:", driverData[0]);
-          // You can also set this in state:
           setFastestDriverHeadshot(driverData[0].headshot_url);
         };
 
@@ -505,7 +290,6 @@ export default function Session({   activeYear, activeGP, activeSession }) {
         let s3Color = s3Info.color;
         let fastestLapColor = fastestLapInfo.color;
 
-        // Helper to fade
         const fadeColor = (hex) => {
           const r = parseInt(hex.slice(1, 3), 16);
           const g = parseInt(hex.slice(3, 5), 16);
@@ -513,7 +297,6 @@ export default function Session({   activeYear, activeGP, activeSession }) {
           return `rgba(${r}, ${g}, ${b}, 0.6)`;
         };
 
-        // If two drivers from same team (but different drivers)
         if (s1Info.team === s2Info.team && s1Info.driver !== s2Info.driver) {
           s2Color = fadeColor(s2Color);
         }
@@ -526,7 +309,6 @@ export default function Session({   activeYear, activeGP, activeSession }) {
           s3Color = fadeColor(s3Color);
         }
 
-        // Update state
         setFastestTimes({
           s1: parseF1Time(fastestS1Lap.Sector1Time),
           s2: parseF1Time(fastestS2Lap.Sector2Time),
@@ -605,10 +387,9 @@ export default function Session({   activeYear, activeGP, activeSession }) {
       </div>
       
       <div className="flex flex-col items-center gap-5">
-        <div className="w-[800px] h-auto bg-[#14131a] brightness-125 shadow-lg rounded-[22px] overflow-hidden flex flex-col border border-white/10">
+        <div className="w-[800px] h-auto bg-[#14131a] brightness-125 shadow-[0_0_10px_#000000] rounded-[22px] overflow-hidden flex flex-col border border-white/10">
           {display_mapData.map((row, i) => (
             <div key={i} className="flex flex-col h-full w-full">
-              {/* 1. Centered Header Section */}
               <div className="w-full flex justify-center py-6 gap-2">
                 <img
                   className="w-13 h-11 rounded-2xl pl-2"
@@ -647,7 +428,6 @@ export default function Session({   activeYear, activeGP, activeSession }) {
                       width="200%"
                       height="200%"
                     >
-                      {/* 1. Create a white glow base */}
                       <feFlood
                         flood-color="white"
                         flood-opacity="0.8"
@@ -665,7 +445,6 @@ export default function Session({   activeYear, activeGP, activeSession }) {
                         result="strong_white_glow"
                       />
 
-                      {/* 2. Layer the original line (optional, for sharp inner edge) */}
                       <feMerge>
                         <feMergeNode in="strong_white_glow" />
                         <feMergeNode in="SourceGraphic" />
@@ -674,9 +453,9 @@ export default function Session({   activeYear, activeGP, activeSession }) {
                   </defs>
 
                   <path
-                    d={`${row.sector1}${row.sector2}${row.sector3}`} // Uses the function defined in step 1
+                    d={`${row.sector1}${row.sector2}${row.sector3}`} 
                     stroke="white"
-                    strokeWidth="12" // Slightly narrower than sectors to create outline effect
+                    strokeWidth="12" 
                     fill="none"
                     filter="url(#whiteGlow)"
                     strokeLinecap="round"
@@ -789,14 +568,12 @@ export default function Session({   activeYear, activeGP, activeSession }) {
     className="relative w-[800px] h-auto shadow-lg rounded-[22px] overflow-hidden flex border border-white/10"
     style={{ backgroundColor: fastestTimes.fastestLapColor || "#14131a" }}
   >
-    {/* 🔥 Background Italic Watermark */}
     <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
       <p className="text-[140px] font-formula1bold italic text-white/30 tracking-widest select-none">
         FASTEST
       </p>
     </div>
 
-    {/* Content Layer */}
   <div className="relative flex h-full w-full items-end p-1">
     
     <div
