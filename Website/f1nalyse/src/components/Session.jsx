@@ -22,8 +22,8 @@ export default function Session({
   const [sessionKey, setSessionKey] = useState(null);
   const [fastestDriverHeadshot, setFastestDriverHeadshot] = useState(null);
 
-  const safeYear = activeYear || "2025";
-  const safeGP = activeGP || "Yas Marina Circuit";
+  const safeYear = activeYear || "2026";
+  const safeGP = activeGP || "Albert Park Grand Prix Circuit";
   const safeSession = activeSession || "Race";
 
   const displayData = newData;

@@ -28,23 +28,23 @@ const tyreColours2 = {
 };
 
 const tyreImages = {
-  SOFT: `/soft_tyres.png`,
-  MEDIUM: "/medium_tyres.png",
-  HARD: "/hard_tyres.png",
-  INTERMEDIATE: "/intermediate_tyres.png",
-  WET: "/wet_tyres.png",
+  SOFT: `/photos/soft_tyres.png`,
+  MEDIUM: `/photos/medium_tyres.png`,
+  HARD: "/photos/hard_tyres.png",
+  INTERMEDIATE: "/photos/intermediate_tyres.png",
+  WET: "/photos/wet_tyres.png",
 };
 
 const tyreImages2 = {
-  HYPERSOFT: "/hypersoft_tyres.png",
-  ULTRASOFT: "/ultrasoft_tyres.png",
-  SUPERSOFT: "/supersoft_tyres.png",
-  SOFT: "/soft2_tyres.png",
-  MEDIUM: "/medium2_tyres.png",
-  HARD: "/hard2_tyres.png",
-  SUPERHARD: "/superhard_tyres.png",
-  INTERMEDIATE: "/intermediate_tyres.png",
-  WET: "/wet_tyres.png",
+  HYPERSOFT: "/photos/hypersoft_tyres.png",
+  ULTRASOFT: "/photos/ultrasoft_tyres.png",
+  SUPERSOFT: "/photos/supersoft_tyres.png",
+  SOFT: "/photos/soft2_tyres.png",
+  MEDIUM: "/photos/medium2_tyres.png",
+  HARD: "/photos/hard2_tyres.png",
+  SUPERHARD: "/photos/superhard_tyres.png",
+  INTERMEDIATE: "/photos/intermediate_tyres.png",
+  WET: "/photos/wet_tyres.png",
 };
 
 function CustomTooltip({ payload, label, active, activeYear }) {
