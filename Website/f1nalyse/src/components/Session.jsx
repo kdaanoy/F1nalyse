@@ -89,6 +89,7 @@ export default function Session({
             const driverInfo = allDrivers.find(
               (d) => d.DriverName === r.Driver && safeYear === d.Year,
             );
+            
             const teamInfo = driverInfo
               ? allTeams.find((t) => t.ID === driverInfo.TeamID)
               : null;

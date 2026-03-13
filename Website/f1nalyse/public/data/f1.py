@@ -32,6 +32,8 @@ drivers_2026 = pd.DataFrame({
 })
 
 def store_data(round):
+    resultID = dfresults["ResultID"].iloc[-1] + 1
+
     for i in range (1, 6):
         session = fastf1.get_session(2026, round, i)
         session.load()
@@ -152,9 +154,6 @@ def store_data(round):
             pd.DataFrame([row]).to_csv("Session.csv", mode="a", header=False, index=False, lineterminator="\n")
 
         if (i != 5):
-            # Retrieve the type, year, circuit and session id for each session
-            resultID = dfresults["ResultID"].iloc[-1] + i
-
             # Retrieve the fastest lap time by the driver
             fastest_laps = laps.groupby("Driver")["LapTime"].min().reset_index()
             fastest_laps = fastest_laps.sort_values("LapTime")
@@ -177,9 +176,9 @@ def store_data(round):
                 
                 # Increment the position for the next driver
                 position += 1
+                resultID += 1
             
         else:
-            resultID = dfresults["ResultID"].iloc[-1] + i
             results = session.results
 
             fastest_laps = laps.groupby("Driver")["LapTime"].min().reset_index()
@@ -201,8 +200,10 @@ def store_data(round):
                 pd.DataFrame([row]).to_csv("Results.csv", mode="a", header=False, index=False, lineterminator="\n")
 
                 position += 1
+                resultID += 1
 
         for indx, lap in laps.iterlaps():
+
             last_lap_id = dflaps["LapID"].iloc[-1]
 
             lap_number = lap['LapNumber']
