@@ -11,7 +11,7 @@ import MenuSession from "./MenuSession";
 import Papa from "papaparse";
 
 
-const yearInfo = ["2025", "2024", "2023", "2022", "2021", "2020", "2019", "2018"]
+const yearInfo = ["2026", "2025", "2024", "2023", "2022", "2021", "2020", "2019", "2018"]
 
 const sessionOrder = {
     "Practice 1": 1,
