@@ -1,14 +1,17 @@
-name: Update F1 Data
+name: Update F1 Data 
 
 on:
   workflow_dispatch:
     inputs:
+      action:
+        description: 'Function: storeData, updateData, train'
+        required: true
       round:
         description: 'Race Round Number'
-        required: true
+        required: false
 
 jobs:
-  f1-update:
+  f1-flexible:
     runs-on: ubuntu-latest
 
     steps:
@@ -24,12 +27,19 @@ jobs:
         run: |
           pip install pandas fastf1 scikit-learn xgboost
 
-      - name: Run F1 Data Script
+      - name: Run selected F1 function
         run: |
           cd Website/f1nalyse/public/data
-          python f1.py storeData ${{ github.event.inputs.round }}
-          python f1.py updateData
-          python f1.py train ${{ github.event.inputs.round }}
+          if [ "${{ github.event.inputs.action }}" = "storeData" ]; then
+            python f1.py storeData ${{ github.event.inputs.round }}
+          elif [ "${{ github.event.inputs.action }}" = "updateData" ]; then
+            python f1.py updateData
+          elif [ "${{ github.event.inputs.action }}" = "train" ]; then
+            python f1.py train ${{ github.event.inputs.round }}
+          else
+            echo "Invalid action: ${{ github.event.inputs.action }}"
+            exit 1
+          fi
 
       - name: Commit updated CSVs
         run: |
