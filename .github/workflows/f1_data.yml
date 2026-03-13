@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       round:
-        description: 'Race round number'
+        description: 'Race Round Number'
         required: true
 
 jobs:
