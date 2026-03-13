@@ -1,0 +1,49 @@
+name: Update F1 Data 
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'Function: storeData, updateData, train'
+        required: true
+      round:
+        description: 'Race Round Number'
+        required: false
+
+jobs:
+  f1_update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          pip install pandas fastf1 scikit-learn xgboost
+
+      - name: Run F1 function
+        run: |
+          cd Website/f1nalyse/public/data
+          if [ "${{ github.event.inputs.action }}" = "storeData" ]; then
+            python f1.py storeData ${{ github.event.inputs.round }}
+          elif [ "${{ github.event.inputs.action }}" = "updateData" ]; then
+            python f1.py updateData
+          elif [ "${{ github.event.inputs.action }}" = "train" ]; then
+            python f1.py train ${{ github.event.inputs.round }}
+          else
+            echo "Invalid action: ${{ github.event.inputs.action }}"
+            exit 1
+
+      - name: Update Files
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "actions@github.com"
+          git add Website/f1nalyse/public/data/*.csv
+          git commit -m "Update F1 data" || echo "No changes to commit"
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/kdaanoy/F1nalyse.git HEAD:main
