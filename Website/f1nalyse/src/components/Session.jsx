@@ -64,6 +64,8 @@ export default function Session({
         );
         if (!session) return;
 
+        console.log(session);
+
         setMapData([
           {
             name: circuit.OfficialName,
