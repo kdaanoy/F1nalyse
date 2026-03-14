@@ -48,13 +48,21 @@ export default function Session({
       ]) => {
         const circuits = Papa.parse(circuitCsv, { header: true }).data;
         const sessions = Papa.parse(sessionCsv, { header: true }).data;
-        const allResults = Papa.parse(resultsCsv, { header: true }).data;
+        const allResults = Papa.parse(resultsCsv, { header: true, skipEmptyLines: true,
+  dynamicTyping: true, }).data;
         const allDrivers = Papa.parse(driversCsv, { header: true }).data;
         const allTeams = Papa.parse(teamsCsv, { header: true }).data;
         const allLaps = Papa.parse(lapsCsv, { header: true }).data;
 
         const circuit = circuits.find((c) => c.Name === safeGP);
         if (!circuit) return;
+
+fetch(`/data/Session.csv?v=${Date.now()}`)
+  .then(res => res.text())
+  .then(csv => {
+    const sessions = Papa.parse(csv, { header: true, skipEmptyLines: true }).data;
+    console.log("rows:", sessions.length);
+  });
 
         const session = sessions.find(
           (s) =>
@@ -84,7 +92,7 @@ export default function Session({
         ]);
 
         const filteredResults = allResults
-          .filter((r) => r.SessionID === session.ID)
+          .filter((r) => r.SessionID?.toString() === session.ID?.toString())
           .map((r, i) => {
             const driverInfo = allDrivers.find(
               (d) => d.DriverName === r.Driver && safeYear === d.Year,
@@ -120,7 +128,9 @@ export default function Session({
 
         console.log("Filtered Results:", filteredResults);
 
-        const sessionLaps = allLaps.filter((l) => l.SessionID === session.ID);
+        const sessionLaps = allLaps.filter(
+          (l) => l.SessionID?.toString() === session.ID?.toString()
+        );
         const driverMap = Object.fromEntries(
           allDrivers.map((d) => [d.ID.toString(), d]),
         );

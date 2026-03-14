@@ -76,7 +76,7 @@ def store_data(round):
                     "Temperature": 0, "RaceLaps": laps['LapNumber'].max().astype(int)}
                 
             # Append the new row to the file
-            pd.DataFrame([row]).to_csv("Session.csv", mode="a", header=False, index=False, lineterminator="\n")
+            pd.DataFrame([row]).to_csv("Session.csv", mode="a", header=False, index=False)
                 
             # Used to debug which ids were used
             print(df_filtered.iloc[0]["ID"])
@@ -101,7 +101,7 @@ def store_data(round):
                 row = {"ID": last_id + i, "Type": raceSchedule[sessionInput], "CircuitID": df_filtered.iloc[0]["ID"], "DateOfSession": raceSchedule[sessionInput + 'DateUtc'],
                     "Temperature": 0, "RaceLaps": laps['LapNumber'].max().astype(int)}
                 
-            pd.DataFrame([row]).to_csv("Session.csv", mode="a", header=False, index=False, lineterminator="\n")
+            pd.DataFrame([row]).to_csv("Session.csv", mode="a", header=False, index=False)
             
         # Similar to Brazil, handle the case for Canada
         elif (raceSchedule['Country'] == "Canada"):
@@ -118,7 +118,7 @@ def store_data(round):
                 row = {"ID": last_id + i, "Type": raceSchedule[sessionInput], "CircuitID": df_filtered.iloc[0]["ID"], "DateOfSession": raceSchedule[sessionInput + 'DateUtc'],
                     "Temperature": 0, "RaceLaps": laps['LapNumber'].max().astype(int)}
                 
-            pd.DataFrame([row]).to_csv("Session.csv", mode="a", header=False, index=False, lineterminator="\n")
+            pd.DataFrame([row]).to_csv("Session.csv", mode="a", header=False, index=False)
 
         # Handle the case for Germany
         elif (raceSchedule['Country'] == "Germany"):
@@ -135,7 +135,7 @@ def store_data(round):
                 row = {"ID": last_id + i, "Type": raceSchedule[sessionInput], "CircuitID": df_filtered.iloc[0]["ID"], "DateOfSession": raceSchedule[sessionInput + 'DateUtc'],
                     "Temperature": 0, "RaceLaps": laps['LapNumber'].max().astype(int)}
                 
-            pd.DataFrame([row]).to_csv("Session.csv", mode="a", header=False, index=False, lineterminator="\n")
+            pd.DataFrame([row]).to_csv("Session.csv", mode="a", header=False, index=False)
             
         # Handle the case for Abu Dhabi
         elif (raceSchedule['Location'] == "Yas Island"):
@@ -152,7 +152,7 @@ def store_data(round):
                 row = {"ID": last_id + i, "Type": raceSchedule[sessionInput], "CircuitID": df_filtered.iloc[0]["ID"], "DateOfSession": raceSchedule[sessionInput + 'DateUtc'],
                     "Temperature": 0, "RaceLaps": laps['LapNumber'].max().astype(int)}
                 
-            pd.DataFrame([row]).to_csv("Session.csv", mode="a", header=False, index=False, lineterminator="\n")
+            pd.DataFrame([row]).to_csv("Session.csv", mode="a", header=False, index=False)
 
         if (i != 5):
             # Retrieve the fastest lap time by the driver
@@ -173,7 +173,7 @@ def store_data(round):
                     timegap = (lap.LapTime - fastest_laps.iloc[0]["LapTime"]).total_seconds()
 
                 row = {"ResultID": resultID, "SessionID": last_id + i, "Position": position, "Driver": driver, "TimeGap": timegap, "FinishTime": lap.LapTime.total_seconds()}
-                pd.DataFrame([row]).to_csv("Results.csv", mode="a", header=False, index=False, lineterminator="\n")
+                pd.DataFrame([row]).to_csv("Results.csv", mode="a", header=False, index=False)
                 
                 # Increment the position for the next driver
                 position += 1
@@ -198,7 +198,7 @@ def store_data(round):
                 print(timegap)
 
                 row = {"ResultID": resultID, "SessionID": last_id + i, "Position": position, "Driver": driver, "TimeGap": timegap, "FinishTime": finish_time}
-                pd.DataFrame([row]).to_csv("Results.csv", mode="a", header=False, index=False, lineterminator="\n")
+                pd.DataFrame([row]).to_csv("Results.csv", mode="a", header=False, index=False)
 
                 position += 1
                 resultID += 1

@@ -63,6 +63,18 @@ export default function Navbar({activeYear, setActiveYear, activeGP, setActiveGP
     const [activeGPMenu, setActiveGPMenu] = useState(false);
     const [activeSessionMenu, setActiveSessionMenu] = useState(false);
 
+    function parseYear(dateStr) {
+        if (!dateStr) return null;
+        if (dateStr.includes("/")) {
+            const [day, month, y] = dateStr.split(" ")[0].split("/");
+            return parseInt(y);
+        }
+        if (dateStr.includes("-")) {
+            return parseInt(dateStr.split(" ")[0].split("-")[0]);
+        }
+        return null;
+        }
+
     useEffect(() => {
         if (!activeYear) return;
 
@@ -71,30 +83,26 @@ export default function Navbar({activeYear, setActiveYear, activeGP, setActiveGP
         setActiveGPMenu(false);
 
         fetch(`/data/Session.csv`)
+  .then(res => res.text())
+  .then(csv => {
+      const cleanCsv = csv.replace(/\r\n/g, "\n").replace(/\r/g, "\n").replace(/\uFEFF/g, "");
+      const parsed = Papa.parse(cleanCsv, { header: true });
+      console.log(parsed.data);
+  });
+
+        fetch(`/data/Session.csv`)
             .then(res => res.text())
             .then(csv => {
                 const parsed = Papa.parse(csv, { header: true });
                 console.log(parsed.data);
                 const gpYears = parsed.data.filter(row => {
-                if (!row.DateOfSession) return false;
+                    if (!row.DateOfSession) return false;
+                    console.log(row.DateOfSession);
 
-                let year;
-
-                if (row.DateOfSession.includes("/")) {
-                    // DD/MM/YYYY
-                    const [day, month, y] = row.DateOfSession.split(" ")[0].split("/");
-                    year = y;
-                } 
-                else if (row.DateOfSession.includes("-")) {
-                    // YYYY-MM-DD
-                    const [y] = row.DateOfSession.split(" ")[0].split("-");
-                    year = y;
-                }
-
-                console.log(year, activeYear);
-
-                return parseInt(year) === parseInt(activeYear);
-            });
+                    const year = parseYear(row.DateOfSession);
+                    console.log(year);
+                    return parseInt(year) === parseInt(activeYear);
+                });
 
                 const distinctGps = [...new Set(gpYears.map(r => r.CircuitID))];
 
@@ -121,7 +129,7 @@ export default function Navbar({activeYear, setActiveYear, activeGP, setActiveGP
     useEffect(() => {
     if (!activeGP || !activeYear) return;
 
-        setActiveSession(null);
+        setActiveSession={setActiveSession};
         setSessions([]);
         setActiveSessionMenu(false);
 
