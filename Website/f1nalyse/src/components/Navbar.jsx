@@ -76,12 +76,25 @@ export default function Navbar({activeYear, setActiveYear, activeGP, setActiveGP
                 const parsed = Papa.parse(csv, { header: true });
                 console.log(parsed.data);
                 const gpYears = parsed.data.filter(row => {
-                    if (!row.DateOfSession) return false;
+                if (!row.DateOfSession) return false;
 
-                    const [day, month, year] = row.DateOfSession.split(" ")[0].split("/");
-                    console.log(year);
-                    return parseInt(year) === parseInt(activeYear);
-                });
+                let year;
+
+                if (row.DateOfSession.includes("/")) {
+                    // DD/MM/YYYY
+                    const [day, month, y] = row.DateOfSession.split(" ")[0].split("/");
+                    year = y;
+                } 
+                else if (row.DateOfSession.includes("-")) {
+                    // YYYY-MM-DD
+                    const [y] = row.DateOfSession.split(" ")[0].split("-");
+                    year = y;
+                }
+
+                console.log(year, activeYear);
+
+                return parseInt(year) === parseInt(activeYear);
+            });
 
                 const distinctGps = [...new Set(gpYears.map(r => r.CircuitID))];
 
@@ -108,7 +121,7 @@ export default function Navbar({activeYear, setActiveYear, activeGP, setActiveGP
     useEffect(() => {
     if (!activeGP || !activeYear) return;
 
-        setActiveSession={setActiveSession};
+        setActiveSession(null);
         setSessions([]);
         setActiveSessionMenu(false);
 

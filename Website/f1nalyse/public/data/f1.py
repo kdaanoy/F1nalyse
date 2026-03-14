@@ -8,7 +8,7 @@ from sklearn.metrics import mean_absolute_error
 
 dfcircuit = pd.read_csv("Circuit.csv")
 dfsession = pd.read_csv("Session.csv")
-dfdrivers = pd.read_csv("Drivers.csv")
+dfdrivers = pd.read_csv("Drivers.csv", encoding='utf-8')
 dfteams = pd.read_csv("Team.csv")
 dfresults = pd.read_csv("Results.csv")
 dflaps = pd.read_csv("Laps.csv")
@@ -18,9 +18,9 @@ dfwcc = pd.read_csv("WCC.csv")
 drivers_2026 = pd.DataFrame({
     "Driver": ["Lando Norris", "Oscar Piastri", "Max Verstappen", "Isack Hadjar",
                "Lewis Hamilton", "Charles Leclerc", "Alexander Albon", "Carlos Sainz",
-               "Sergio Perez", "Valtteri Bottas", "Fernando Alonso", "Lance Stroll",
+               "Sergio Pérez", "Valtteri Bottas", "Fernando Alonso", "Lance Stroll",
                "Pierre Gasly", "Franco Colapinto", "George Russell", "Kimi Antonelli",
-               "Nico Hulkenberg", "Gabriel Bortoleto", "Esteban Ocon", "Oliver Bearman",
+               "Nico Hülkenberg", "Gabriel Bortoleto", "Esteban Ocon", "Oliver Bearman",
                "Liam Lawson", "Arvid Lindblad"],
     
     "Team": ["McLaren", "McLaren", "Red Bull", "Red Bull",
@@ -208,14 +208,6 @@ def store_data(round):
             driver_code = lap['Driver']
             driver_name = session.get_driver(driver_code)["FullName"]
             print(driver_name)
-            if driver_name == "Sergio Perez":
-                driver_name = "Sergio Pérez"
-            elif driver_name == "Nico Hulkenberg":
-                driver_name = "Nico Hülkenberg"
-            elif driver_name == "Kimi Raikkonen":
-                driver_name = "Kimi Räikkönen"
-            else:
-                driver_name = driver_name
             driver_teamname = session.get_driver(driver_code)["TeamName"]
             if driver_teamname == "Red Bull Racing":
                 driver_teamname = "Red Bull"
@@ -428,7 +420,7 @@ def get_driver_data(year):
 def set_2026_features(city, country):
 
     qualifying = {'George Russell': 1, 'Kimi Antonelli': 2, 'Isack Hadjar': 3, 'Charles Leclerc': 4, 'Oscar Piastri': 5, 'Lando Norris': 6, 'Lewis Hamilton': 7, 'Liam Lawson': 8, 'Arvid Lindblad': 9,
-                  'Gabriel Bortoleto': 10, 'Nico Hulkenberg': 11, 'Oliver Bearman': 12, 'Esteban Ocon': 13, 'Pierre Gasly': 14, 'Alexander Albon': 15, 'Franco Colapinto': 16, 'Fernando Alonso': 17, 'Sergio Perez': 18, 'Valtteri Bottas': 19, 'Max Verstappen': 20,
+                  'Gabriel Bortoleto': 10, 'Nico Hülkenberg': 11, 'Oliver Bearman': 12, 'Esteban Ocon': 13, 'Pierre Gasly': 14, 'Alexander Albon': 15, 'Franco Colapinto': 16, 'Fernando Alonso': 17, 'Sergio Pérez': 18, 'Valtteri Bottas': 19, 'Max Verstappen': 20,
                   'Carlos Sainz': 21, 'Lance Stroll': 22}
 
     # This will be where each row of data for each driver will be stored before converting into a data frame
