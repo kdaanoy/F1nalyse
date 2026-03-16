@@ -33,7 +33,7 @@ export default function Session({
     Promise.all([
       fetch("/data/Circuit.csv").then((res) => res.text()),
       fetch("/data/Session.csv").then((res) => res.text()),
-      fetch("/data/Results.csv").then((res) => res.text()),
+      fetch("/data/Results.csv?t=" + Date.now()).then((res) => res.text()),
       fetch("/data/Drivers.csv").then((res) => res.text()),
       fetch("/data/Laps.csv").then((res) => res.text()),
       fetch("/data/Team.csv").then((res) => res.text()),
