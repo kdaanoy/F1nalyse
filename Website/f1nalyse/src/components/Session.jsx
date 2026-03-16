@@ -228,8 +228,8 @@ fetch(`/data/Session.csv?v=${Date.now()}`)
           sessionLaps.length > 0
             ? sessionLaps.reduce(
               (fastest, lap) =>
-                parseTime(lap.LapTimeSeconds) <
-                  parseTime(fastest.LapTimeSeconds)
+                parseTime(lap.LapTime) <
+                  parseTime(fastest.LapTime)
                   ? lap
                   : fastest,
               sessionLaps[0],
@@ -390,7 +390,7 @@ fetch(`/data/Session.csv?v=${Date.now()}`)
         {displayData.map((row, i) => (
           <div
             key={i}
-            className={`grid grid-cols-[3.5rem_1fr_4rem] items-center w-full px-4 py-2 ${
+            className={`grid grid-cols-[3.5rem_1fr_5rem] items-center w-full px-4 py-2 ${
               row.active ? "rounded-md bg-[#2d2d35]" : ""
             }`}
           >
@@ -457,7 +457,9 @@ fetch(`/data/Session.csv?v=${Date.now()}`)
                 {row.filePath ? (
                   <img
                     src={`/photos/${row.filePath}.avif`}
-                    className="w-[500px] rounded-lg translate-x-6 pt-12 pb-12"
+                    className={`w-[500px] rounded-lg translate-x-6 pt-12 pb-12 ${
+                      displayData.length == 20 ? "pt-12 pb-12" : displayData.length == 21 ? "pt-16 pb-16" : displayData.length == 22 ? "pt-22 pb-22" : ""
+                    }`}
                   />
                 ) : (
                   <svg

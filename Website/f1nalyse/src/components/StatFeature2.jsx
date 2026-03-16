@@ -54,7 +54,7 @@ export default function StatFeature2({ laps }) {
       if (!processedData[i]) {
         processedData[i] = { lap: i + 1 };
       }
-
+      
       processedData[i][driver.driver] = lap.time;
     });
   });
@@ -79,7 +79,7 @@ export default function StatFeature2({ laps }) {
             <XAxis dataKey="lap" stroke="grey" fontFamily="formula1bold" />
             <YAxis
               stroke="grey"
-              domain={["dataMin-1", "dataMax+1"]}
+              domain={["dataMin", "dataMax+1"]}
               fontFamily="formula1bold"
             />
             <Tooltip content={<CustomTooltip />} />

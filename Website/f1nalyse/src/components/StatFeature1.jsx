@@ -150,6 +150,7 @@ export default function StatFeature1({ laps, activeYear }) {
             >
               <XAxis type="number" fontFamily="formula1bold" />
               <YAxis
+                interval={0}
                 dataKey="driver"
                 type="category"
                 fontFamily="formula1bold"

@@ -38,7 +38,7 @@ export default function Predict2026({ activatePredict, close }) {
   const today = new Date();
   const lastGP = grandprixes
     .filter(gp => new Date(gp.date) <= today)
-    .pop(); // get last GP before today
+    .pop(); 
   return lastGP?.round ?? 1;
 });
 
@@ -68,10 +68,9 @@ return grandprixes.find(gp => gp.name === nameA).round - grandprixes.find(gp => 
         .then((data) => {
             const result = Papa.parse(data, { header: true, skipEmptyLines: true }).data;
             
-            // Convert array to an object: { "Mercedes": "#6CD3BF", "Red Bull": "#3671C6" }
             const colorMap = {};
             result.forEach(row => {
-                colorMap[row.TeamName] = row.Color; // Ensure your CSV headers are exactly 'Team' and 'Color'
+                colorMap[row.TeamName] = row.Color; 
             });
             setTeamColors(colorMap);
             console.log(colorMap);
@@ -84,7 +83,7 @@ return grandprixes.find(gp => gp.name === nameA).round - grandprixes.find(gp => 
         .map((gp, index) => ({ ...gp, index }))
         .filter(gp => new Date(gp.date) <= today)
         .map(gp => gp.index)
-        .pop() ?? 0; // default to first GP if none have passed
+        .pop() ?? 0;
     setGPPrediction(lastGPIndex + 1);
 }, []);
     
@@ -199,7 +198,7 @@ return grandprixes.find(gp => gp.name === nameA).round - grandprixes.find(gp => 
         {predictionData.map((prediction, index) => {
             if (index < 3 || index == 22) return null;
             const teamColor = teamColors[prediction.Team] || "#1c1c24";
-            const actualPosition = index + 1; // Keeps numbering correct
+            const actualPosition = index + 1; 
             return (
                 <div 
                     key={actualPosition} 
