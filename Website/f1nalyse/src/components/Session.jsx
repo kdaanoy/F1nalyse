@@ -360,7 +360,7 @@ fetch(`/data/Session.csv?v=${Date.now()}`)
           s1Lap: fastestS1Lap.LapNumber,
           s2Lap: fastestS2Lap.LapNumber,
           s3Lap: fastestS3Lap.LapNumber,
-          fastestLapLap: fastestLap.LapNumber,
+          fastestLapNumber: fastestLap.LapNumber,
 
           s1Team: s1Info.team,
           s2Team: s2Info.team,
@@ -417,7 +417,7 @@ fetch(`/data/Session.csv?v=${Date.now()}`)
             </div>
 
             <p className="font-formula1bold text-sm text-right font-formula1">
-              {row.gap}
+                {(Number(row.gap)) == 0 ? "DNF" : Number(row.gap).toFixed(3)}
             </p>
           </div>
         ))}
@@ -580,7 +580,7 @@ fetch(`/data/Session.csv?v=${Date.now()}`)
               </div>
               <div className="flex flex-col justify-center items-center gap-1 pl-50">
                 <p className="font-formula1bold text-[30px] text-white">
-                  Lap {fastestTimes.fastestLapLap || "-"}
+                  Lap {Number(fastestTimes.fastestLapNumber) || "-"}
                 </p>
                 <p className="font-formula1bold text-[53px] text-white">
                   {fastestTimes.fastestLap

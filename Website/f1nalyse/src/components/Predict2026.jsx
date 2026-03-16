@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { use, useEffect } from "react";
 import { FaArrowRight } from "react-icons/fa";
 import { useState } from "react";
 import Papa from "papaparse";
@@ -6,12 +6,11 @@ import Papa from "papaparse";
 export default function Predict2026({ activatePredict, close }) {
 
     const [circuitgps, setCircuitGPs] = useState([]);
-    const [gpprediction, setGPPrediction] = useState(1);
     const [predictionData, setPredictionData] = useState([]);
     const [teamColors, setTeamColors] = useState({});
 
     const grandprixes = [{name: "Australian Grand Prix", round: 1, date: "03/08/2026"},
-        {name: "Chinese Grand Prix", round: 2, date: "03/15/2026"},
+        {name: "Chinese Grand Prix", round: 2, date: "03/14/2026"},
         {name: "Japanese Grand Prix", round: 3, date: "04/29/2026"},
         {name: "Bahrain Grand Prix", round: 4, date: "04/12/2026"},
         {name: "Saudi Arabian Grand Prix", round: 5, date: "04/19/2026"},
@@ -35,10 +34,18 @@ export default function Predict2026({ activatePredict, close }) {
         {name: "Abu Dhabi Grand Prix", round: 23, date: "12/06/2026"}
     ]
 
+    const [gpprediction, setGPPrediction] = useState(() => {
+  const today = new Date();
+  const lastGP = grandprixes
+    .filter(gp => new Date(gp.date) <= today)
+    .pop(); // get last GP before today
+  return lastGP?.round ?? 1;
+});
+
     useEffect(() => {
         fetch("/data/Circuit.csv").then((res) => res.text())
         .then((data) => {
-            const validcircuits = Object.keys(grandprixes);
+            const validcircuits = grandprixes.map(gp => gp.name);
             const circuits = Papa.parse(data, { header: true }).data;
             const sortedCircuits = circuits
             .filter(circuit => {
@@ -48,8 +55,8 @@ export default function Predict2026({ activatePredict, close }) {
                 })
                 .sort((a, b) => {
                     const nameA = validcircuits.find(shortName => a.OfficialName.includes(shortName));
-                    const nameB = validcircuits.find(shortName => b.OfficialName.includes(shortName));
-                    return grandprixes[nameA] - grandprixes[nameB];
+const nameB = validcircuits.find(shortName => b.OfficialName.includes(shortName));
+return grandprixes.find(gp => gp.name === nameA).round - grandprixes.find(gp => gp.name === nameB).round;
             });
             setCircuitGPs(sortedCircuits);
         });
@@ -71,6 +78,15 @@ export default function Predict2026({ activatePredict, close }) {
         });
 }, []);
 
+    useEffect(() => {
+    const today = new Date();
+    const lastGPIndex = grandprixes
+        .map((gp, index) => ({ ...gp, index }))
+        .filter(gp => new Date(gp.date) <= today)
+        .map(gp => gp.index)
+        .pop() ?? 0; // default to first GP if none have passed
+    setGPPrediction(lastGPIndex + 1);
+}, []);
     
 
     useEffect(() => {

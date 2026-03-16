@@ -419,9 +419,13 @@ def get_driver_data(year):
 
 def set_2026_features(city, country):
 
-    qualifying = {'George Russell': 1, 'Kimi Antonelli': 2, 'Isack Hadjar': 3, 'Charles Leclerc': 4, 'Oscar Piastri': 5, 'Lando Norris': 6, 'Lewis Hamilton': 7, 'Liam Lawson': 8, 'Arvid Lindblad': 9,
-                  'Gabriel Bortoleto': 10, 'Nico Hülkenberg': 11, 'Oliver Bearman': 12, 'Esteban Ocon': 13, 'Pierre Gasly': 14, 'Alexander Albon': 15, 'Franco Colapinto': 16, 'Fernando Alonso': 17, 'Sergio Pérez': 18, 'Valtteri Bottas': 19, 'Max Verstappen': 20,
-                  'Carlos Sainz': 21, 'Lance Stroll': 22}
+    session = fastf1.get_session(2026, city, "Q")
+    session.load()
+    results = session.results
+
+    qualifying = {}
+    for index, row in results.iterrows():
+        qualifying[row['FullName']] = int(row['Position'])
 
     # This will be where each row of data for each driver will be stored before converting into a data frame
     data = []
@@ -552,7 +556,12 @@ def set_2026_features(city, country):
                 dnf_rate = dnf/len(career_positions)
             else:
                 dnf_rate = 0.5
-        
+
+        if driver == "Sergio Pérez":
+            driver = "Sergio Perez"
+        elif driver == "Nico Hülkenberg":
+            driver = "Nico Hulkenberg"
+
         # Append the data for that driver   
         data.append({
             "Driver": driver,
@@ -624,7 +633,7 @@ def train(city, country):
     race1['Position'] = predictions
     race1 = race1.sort_values(by="Position")
     print(race1)
-    race1.to_csv("Website/f1nalyse/public/data/race" + str(round) + "_predictions.csv", index=False)
+    race1.to_csv("race" + str(round) + "_predictions.csv", index=False)
 
     # Evaluate the error of the model
     y_pred = grid_search.best_estimator_.predict(X_test)
