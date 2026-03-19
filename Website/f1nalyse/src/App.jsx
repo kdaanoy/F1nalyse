@@ -15,7 +15,7 @@ function App() {
   const [activatePredict, setActivatePredict] = useState(false);
 
   return (
-    <div className = "pt-25 min-h-screen bg-[#14131a] text-white overflow-hidden">
+    <div className = "min-h-screen bg-[#14131a] text-white overflow-hidden">
       <Navbar 
         activeYear={activeYear} setActiveYear={setActiveYear}
         activeGP={activeGP} setActiveGP={setActiveGP}

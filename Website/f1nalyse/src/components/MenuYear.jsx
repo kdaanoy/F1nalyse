@@ -1,5 +1,7 @@
+// Pass the year and the functions to set the functions to set the active year and the menu state
 const MenuYear = ({ item, setActiveYear, setActiveYearMenu }) => {
   return (
+    // Each year is shown as a list item and when clicked, it sets the year and the menu state to false to close the menu
     <li
       onClick={() => {
         setActiveYear(item);

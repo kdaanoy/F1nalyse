@@ -1,5 +1,7 @@
+// Pass the session name and the functions to set the active session and the menu state
 const MenuSession = ({ item, setActiveSession, setActiveSessionMenu }) => {
   return (
+    // Each session is shown as a list item and when clicked, it sets the session and the menu state to false to close the menu
     <li
       onClick={() => {
         setActiveSession(item);

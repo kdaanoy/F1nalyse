@@ -8,10 +8,15 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { FaCircleInfo } from "react-icons/fa6";
+ 
 
 export default function StatFeature2({ laps }) {
   console.log(laps);
+
+  const [infoActive, setShowInfo] = useState(false);
+  const [hovered, setHovered] = useState(false);
 
   const processedData = [];
   const [visibleDrivers, setVisibleDrivers] = useState(
@@ -116,7 +121,12 @@ export default function StatFeature2({ laps }) {
           ))}
         </div>
 
-        <div className="absolute top-5 right-5 flex gap-2">
+       <div
+      className="absolute top-3 right-5 flex flex-col items-end"
+    >
+    </div>
+
+        <div className="absolute top-12 right-5 flex gap-2">
           <button
             onClick={() => toggleAll(false)}
             className="border-[2px] rounded-[13px] p-1 font-formula1bold cursor-pointer select-none transition-colors "

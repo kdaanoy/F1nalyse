@@ -379,7 +379,7 @@ fetch(`/data/Session.csv?v=${Date.now()}`)
   }, [activeYear, activeGP, activeSession]);
 
   return (
-    <div className="flex justify-center items-start h-auto py-3 gap-10">
+    <div className="flex justify-center items-start h-auto py-3 gap-10 pt-8">
       <div className="w-full max-w-md space-y-1">
         <div className="grid grid-cols-[3.5rem_1fr_4rem] items-center w-full px-4 pb-2">
           <p className="font-formula1 text-xs text-gray-400">POS</p>
