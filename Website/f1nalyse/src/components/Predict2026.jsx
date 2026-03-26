@@ -164,7 +164,7 @@ export default function Predict2026({ activatePredict, close }) {
         ${activatePredict ? "opacity-100 visible" : "opacity-0 invisible"}`}
         >
 
-            // Used for the transition of the screen
+            {/* Used for the transition of the screen */}   
             <div
                 className={`p-8  w-[100%] h-[100%] transition-transform duration-300
         ${activatePredict ? "scale-100" : "scale-95"}`}
@@ -174,7 +174,7 @@ export default function Predict2026({ activatePredict, close }) {
 
                     <div className="flex flex-col grid-cols-1 gap-5 pl-30 overflow-y-auto pr-5 custom-scrollbar h-full">
 
-                        // Map through the circuitgps and show a button for each circuit for predicting
+                        {/* Map through the circuitgps and show a button for each circuit for predicting */}
                         {circuitgps.map((circuit, index) => {
 
                             // Find the grand prix for each circuit by checkig if the circuit official name includes the grand prix name 
@@ -202,7 +202,7 @@ export default function Predict2026({ activatePredict, close }) {
                                         {circuit.OfficialName}
                                     </p>
 
-                                    // If the button is not allowed to be shown then show a message saying that the prediction is locked
+                                    {/* If the button is not allowed to be shown then show a message saying that the prediction is locked */}
                                     {!showButton ? (
                                         <div>
                                             Locked Until After Qualifying
@@ -221,7 +221,7 @@ export default function Predict2026({ activatePredict, close }) {
                             </div>
                             <h2 className="flex flex-row flex-wrap gap-3">
 
-                                // Map through the prediction data and show the top 3 predictions in a larger card
+                                {/* Map through the prediction data and show the top 3 predictions in a larger card */}
                                 {predictionData.map((prediction, index) => {
 
                                     // Set the team colour and last name of the driver for the image
