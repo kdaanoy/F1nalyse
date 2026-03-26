@@ -58,7 +58,7 @@ function CustomTooltip({ payload, label, active, activeYear }) {
     Number(activeYear) > 2019 || activeYear == null ? tyreImages : tyreImages2;
 
   if (!filteredPayload.length) return null;
-  
+
 
   return (
     <div
@@ -116,7 +116,7 @@ const renderCustomLabel = (data) => {
 };
 
 export default function StatFeature1({ laps, activeYear }) {
-  
+
   console.log(activeYear);
   const [hovered, setHovered] = useState(false);
   const compoundColours =
@@ -157,35 +157,34 @@ export default function StatFeature1({ laps, activeYear }) {
 
           <div
             className={`mt-2 w-70 bg-[#14131a] brightness-125 text-black text-sm p-3 rounded-xl shadow-lg transition-all duration-500 origin-top-right border-[2px] border-white
-            ${
-              hovered
+            ${hovered
                 ? "opacity-100 z-50"
                 : "opacity-0 z-50"
-            }`}
+              }`}
           >
             <p className="font-formula1bold text-white">Tyre Info</p>
             {activeYear > 2019 || activeYear == null ?
-            <p className="text-sm mt-3 text-white">
-              <ul className="pl-5 gap-3 flex flex-col">
-                <li><span className="font-formula1bold">SOFT</span>: Highest grip, but but least durable.</li>
-                <li><span className="font-formula1bold">MEDIUM</span>: Balanced offering a mix of performance and durability.</li>
-                <li><span className="font-formula1bold">HARD</span>: Lowest grip but most durable.</li>
-                <li><span className="font-formula1bold">INTERMEDIATE</span>: For light damp wet conditions.</li>
-                <li><span className="font-formula1bold">WET</span>: Used in heavy rain, has deeper grooves for more water dispersion.</li>
-              </ul>
-            </p> 
-            : <p className="text-sm mt-3 text-white">
-              <ul className="pl-5 gap-3 flex flex-col">
-                <li><span className="font-formula1bold">HYPERSOFT</span>: Highest grip, but least durable.</li>
-                <li><span className="font-formula1bold">ULTRASOFT</span>: High grip, but more durable than HYPERSOFT.</li>
-                <li><span className="font-formula1bold">SUPERSOFT</span>: Good grip and is perfect for qualifying.</li>
-                <li><span className="font-formula1bold">SOFT</span>: Balanced durability and performance.</li>
-                <li><span className="font-formula1bold">MEDIUM</span>: Complete balance of grip and durability.</li>
-                <li><span className="font-formula1bold">HARD</span>: Less grip than MEDIUM but more durable.</li>
-                <li><span className="font-formula1bold">SUPERHARD</span>: Lowest grip but most durable.</li>
-                <li><span className="font-formula1bold">INTERMEDIATE</span>: For light damp wet conditions.</li>
-                <li><span className="font-formula1bold">WET</span>: Used in heavy rain, has deeper grooves for more water dispersion.</li>
-              </ul>
+              <p className="text-sm mt-3 text-white">
+                <ul className="pl-5 gap-3 flex flex-col">
+                  <li><span className="font-formula1bold">SOFT</span>: Highest grip, but but least durable.</li>
+                  <li><span className="font-formula1bold">MEDIUM</span>: Balanced offering a mix of performance and durability.</li>
+                  <li><span className="font-formula1bold">HARD</span>: Lowest grip but most durable.</li>
+                  <li><span className="font-formula1bold">INTERMEDIATE</span>: For light damp wet conditions.</li>
+                  <li><span className="font-formula1bold">WET</span>: Used in heavy rain, has deeper grooves for more water dispersion.</li>
+                </ul>
+              </p>
+              : <p className="text-sm mt-3 text-white">
+                <ul className="pl-5 gap-3 flex flex-col">
+                  <li><span className="font-formula1bold">HYPERSOFT</span>: Highest grip, but least durable.</li>
+                  <li><span className="font-formula1bold">ULTRASOFT</span>: High grip, but more durable than HYPERSOFT.</li>
+                  <li><span className="font-formula1bold">SUPERSOFT</span>: Good grip and is perfect for qualifying.</li>
+                  <li><span className="font-formula1bold">SOFT</span>: Balanced durability and performance.</li>
+                  <li><span className="font-formula1bold">MEDIUM</span>: Complete balance of grip and durability.</li>
+                  <li><span className="font-formula1bold">HARD</span>: Less grip than MEDIUM but more durable.</li>
+                  <li><span className="font-formula1bold">SUPERHARD</span>: Lowest grip but most durable.</li>
+                  <li><span className="font-formula1bold">INTERMEDIATE</span>: For light damp wet conditions.</li>
+                  <li><span className="font-formula1bold">WET</span>: Used in heavy rain, has deeper grooves for more water dispersion.</li>
+                </ul>
               </p>}
           </div>
         </div>
@@ -237,7 +236,7 @@ export default function StatFeature1({ laps, activeYear }) {
             </BarChart>
           </ResponsiveContainer>
         </div>
-        
+
       </div>
     </div>
   );

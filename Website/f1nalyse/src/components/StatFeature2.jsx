@@ -10,7 +10,7 @@ import {
 } from "recharts";
 import { useState, useEffect } from "react";
 import { FaCircleInfo } from "react-icons/fa6";
- 
+
 
 export default function StatFeature2({ laps }) {
   console.log(laps);
@@ -59,7 +59,7 @@ export default function StatFeature2({ laps }) {
       if (!processedData[i]) {
         processedData[i] = { lap: i + 1 };
       }
-      
+
       processedData[i][driver.driver] = lap.time;
     });
   });
@@ -121,10 +121,10 @@ export default function StatFeature2({ laps }) {
           ))}
         </div>
 
-       <div
-      className="absolute top-3 right-5 flex flex-col items-end"
-    >
-    </div>
+        <div
+          className="absolute top-3 right-5 flex flex-col items-end"
+        >
+        </div>
 
         <div className="absolute top-12 right-5 flex gap-2">
           <button

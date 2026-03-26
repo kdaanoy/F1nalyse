@@ -135,14 +135,14 @@ export default function Predict2026({ activatePredict, close }) {
 
     // useEffect to fetch the prediction data for the selected GP 
     useEffect(() => {
-        
+
         // If there is no predicted GP selected, return nothing
         if (!gpprediction) return;
 
         // Fetch the data from the prediction csv file
         fetch(`/data/race${gpprediction}_predictions.csv`).then((res) => res.text())
             .then((data) => {
-                
+
                 // Parse the data using PapaParse and set the prediction data
                 const predictions = Papa.parse(data, { header: true }).data;
                 setPredictionData(predictions);
@@ -201,7 +201,7 @@ export default function Predict2026({ activatePredict, close }) {
                                     <p className="text-gray-500 font-titiliumreg text-sm mt-2">
                                         {circuit.OfficialName}
                                     </p>
-                                    
+
                                     // If the button is not allowed to be shown then show a message saying that the prediction is locked
                                     {!showButton ? (
                                         <div>
@@ -221,7 +221,7 @@ export default function Predict2026({ activatePredict, close }) {
                             </div>
                             <h2 className="flex flex-row flex-wrap gap-3">
 
-                                // Map through the prediction data and show the top 3 predictions in a larger card 
+                                // Map through the prediction data and show the top 3 predictions in a larger card
                                 {predictionData.map((prediction, index) => {
 
                                     // Set the team colour and last name of the driver for the image
@@ -268,7 +268,7 @@ export default function Predict2026({ activatePredict, close }) {
                                 })}
                             </h2>
                         </div>
-                        
+
                         <div className="flex flex-row flex-wrap w-[710px] gap-2 pt-2">
 
                             {/* Map through the predictiond data for the rest of the drivers and show them in a smaller card version */}
@@ -300,7 +300,7 @@ export default function Predict2026({ activatePredict, close }) {
                             })}
                         </div>
                     </div>
-                        
+
                     {/* Button to close the prediction screen which calls the close function */}
                     <button onClick={close}>
                         <FaArrowRight className="text-white hover:text-gray-300 cursor-pointer text-[22px]" />

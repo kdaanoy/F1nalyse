@@ -255,10 +255,10 @@ export default function Navbar({
 
                     {/* The dropdown menu for the year selection */}
                     <div className="relative w-full max-w-[200px]">
-                        
+
                         {/* The button that opens the menu */}
                         <button
-                            
+
                             /* When the button is clicked, it sets the activeYearMenu state to the opposite depending on its current value */
                             onClick={() => {
                                 setActiveYearMenu(!activeYearMenu);
@@ -266,8 +266,8 @@ export default function Navbar({
 
                             /* Styling for the button changes depending on whether the menu is active or not */
                             className={`${activeYearMenu
-                                    ? "rounded-br-none rounded-bl-none"
-                                    : "rounded-br-md rounded-bl-md"
+                                ? "rounded-br-none rounded-bl-none"
+                                : "rounded-br-md rounded-bl-md"
                                 } rounded-tl-md rounded-tr-md bg-[#2d2d35] p-1.5 w-full rounded-md text-black hover:bg-[#44444b] duration-200 flex items-center gap-1 cursor-pointer hover:outline-2 hover:outline-white ease-in`}
                         >
 
@@ -294,8 +294,8 @@ export default function Navbar({
                         {/* The dropdown menu itself with the list of years which is shown or hidden depending on the activeYearMenu state */}
                         <div
                             className={`${activeYearMenu
-                                    ? "top-full"
-                                    : "top-1/2 opacity-0 pointer-events-none"
+                                ? "top-full"
+                                : "top-1/2 opacity-0 pointer-events-none"
                                 } w-full bg-[#2d2d35] absolute left-0 duration-200 rounded-bl-md rounded-br-md`}
                         >
 
@@ -315,7 +315,7 @@ export default function Navbar({
                             </ul>
                         </div>
                     </div>
-                    
+
                     {/* The dropdown menu for the GP selection similar to the year dropdown menu */}
                     <div className="relative w-full max-w-[350px]">
 
@@ -329,14 +329,14 @@ export default function Navbar({
 
                             /* Styling for the button changes depending on whether the menu is active or not */
                             className={`${activeGPMenu
-                                    ? "rounded-br-none rounded-bl-none"
-                                    : "rounded-br-md rounded-bl-md"
+                                ? "rounded-br-none rounded-bl-none"
+                                : "rounded-br-md rounded-bl-md"
                                 } rounded-tl-md rounded-tr-md bg-[#2d2d35] p-1.5 w-full rounded text-black hover:bg-[#44444b] duration-200 flex items-center gap-1 cursor-pointer hover:outline-2 hover:outline-white ease-in`}
                         >
 
                             {/* Checks if the activeGP is null and therefore sets the text of the button to "Select GP" or the active GP */}
                             {activeGP === null ? (
-                                
+
                                 // If there is no active GP then set the text to "Select GP"
                                 <div className="flex items-center w-full text-white">
                                     <FaRoad />
@@ -359,8 +359,8 @@ export default function Navbar({
                         {/* The dropdown menu itself with the list of GPs which is shown or hidden depending on the activeGPMenu state */}
                         <div
                             className={`${activeGPMenu
-                                    ? "top-full"
-                                    : "top-1/2 opacity-0 pointer-events-none"
+                                ? "top-full"
+                                : "top-1/2 opacity-0 pointer-events-none"
                                 } w-full left-0 bg-[#2d2d35] absolute duration-200 rounded-bl-md rounded-br-md overflow-hidden text-white`}
                         >
                             {/* The list of GPs which maps through the gps list and creates a MenuGP component which is basically a
@@ -379,7 +379,7 @@ export default function Navbar({
                             </ul>
                         </div>
                     </div>
-                            
+
                     {/* The dropdown menu for the session selection similar to the year and GP dropdown menu */}
                     <div className="relative w-full max-w-[350px]">
 
@@ -393,8 +393,8 @@ export default function Navbar({
 
                             /* Styling for the button changes depending on whether the menu is active or not */
                             className={`${activeSessionMenu
-                                    ? "rounded-br-none rounded-bl-none"
-                                    : "rounded-br-md rounded-bl-md"
+                                ? "rounded-br-none rounded-bl-none"
+                                : "rounded-br-md rounded-bl-md"
                                 } rounded-tl-md rounded-tr-md bg-[#2d2d35] p-1.5 w-full rounded text-black hover:bg-[#44444b] duration-200 flex items-center gap-1 cursor-pointer hover:outline-2 hover:outline-white ease-in`}
                         >
 
@@ -419,12 +419,12 @@ export default function Navbar({
                                 </div>
                             )}
                         </button>
-                        
+
                         {/* The dropdown menu itself with the list of sessions which is shown or hidden depending on the activeSessionMenu state */}
                         <div
                             className={`${activeSessionMenu
-                                    ? "top-full"
-                                    : "top-1/2 opacity-0 pointer-events-none"
+                                ? "top-full"
+                                : "top-1/2 opacity-0 pointer-events-none"
                                 } w-full left-0 bg-[#2d2d35] absolute duration-200 rounded-bl-md rounded-br-md overflow-hidden text-white`}
                         >
 
@@ -444,7 +444,7 @@ export default function Navbar({
                             </ul>
                         </div>
                     </div>
-                            
+
                     {/* A button for predicting future 2026 races */}
                     <div className="relative w-full max-w-[170px]">
 

@@ -1,3 +1,4 @@
+// Imports used
 import { useState, useEffect } from "react";
 import Papa from "papaparse";
 import React from "react";
@@ -11,25 +12,34 @@ import {
 } from "recharts";
 
 export default function Session({
+
+  // State variables and functions passed from the App component
   activeYear,
   activeGP,
   activeSession,
   setLaps,
 }) {
+
+  // State variables using the useState to control the selected session, data, key, and fastest times
   const [newData, setData] = useState([]);
   const [newMapdata, setMapData] = useState([]);
   const [fastestTimes, setFastestTimes] = useState({ s1: 0, s2: 0, s3: 0 });
   const [sessionKey, setSessionKey] = useState(null);
   const [fastestDriverHeadshot, setFastestDriverHeadshot] = useState(null);
 
+  // Preset values for the year, GP, and the session when the website is first loaded
   const safeYear = activeYear || "2026";
   const safeGP = activeGP || "Albert Park Grand Prix Circuit";
   const safeSession = activeSession || "Race";
 
+  // Variables to hold the data for the session
   const displayData = newData;
   const displayMapData = newMapdata;
 
+  // useEffect to fetch the data from the CSV files and process the data when the year, GP and session is selected
   useEffect(() => {
+
+    // Promise.all fetches all the CSV files needed for the session data and parses them using Papaparse
     Promise.all([
       fetch("/data/Circuit.csv").then((res) => res.text()),
       fetch("/data/Session.csv").then((res) => res.text()),
@@ -46,34 +56,38 @@ export default function Session({
         lapsCsv,
         teamsCsv,
       ]) => {
+
+        // CSV data  are stored as variables and parsed using Papaparse
         const circuits = Papa.parse(circuitCsv, { header: true }).data;
         const sessions = Papa.parse(sessionCsv, { header: true }).data;
-        const allResults = Papa.parse(resultsCsv, { header: true, skipEmptyLines: true,
-  dynamicTyping: true, }).data;
+        // Results data is parsed with skipEmptyLines and dynamicTyping to handle empty lines and convert to the right data types
+        // Used for debugging
+        const allResults = Papa.parse(resultsCsv, {
+          header: true, skipEmptyLines: true,
+          dynamicTyping: true,
+        }).data;
         const allDrivers = Papa.parse(driversCsv, { header: true }).data;
         const allTeams = Papa.parse(teamsCsv, { header: true }).data;
         const allLaps = Papa.parse(lapsCsv, { header: true }).data;
 
+        // Find the circuit that matches the selected GP and if not found, return nothing
         const circuit = circuits.find((c) => c.Name === safeGP);
-        if (!circuit) return;
+        if (!circuit) 
+          return;
 
-fetch(`/data/Session.csv?v=${Date.now()}`)
-  .then(res => res.text())
-  .then(csv => {
-    const sessions = Papa.parse(csv, { header: true, skipEmptyLines: true }).data;
-    console.log("rows:", sessions.length);
-  });
-
+        // Find the session that matches the selected GP, year, and session type, and if not found then return nothing
         const session = sessions.find(
           (s) =>
             s.CircuitID?.toString().trim() === circuit.ID?.toString().trim() &&
             s.DateOfSession.includes(safeYear) &&
             s.Type === safeSession,
         );
-        if (!session) return;
+        if (!session) 
+          return;
 
         console.log(session);
 
+        // Set the map data for the session using the circuit and session information from the CSV file
         setMapData([
           {
             name: circuit.OfficialName,
@@ -91,13 +105,16 @@ fetch(`/data/Session.csv?v=${Date.now()}`)
           },
         ]);
 
+        // Filter the results data to get the results for the selected session and map the data to the correct driver with the given year
+        // and the team information. Then return the position, the drivers abbreviation code, team name, colour, gap and true or false for 
+        // the background colour 
         const filteredResults = allResults
           .filter((r) => r.SessionID?.toString() === session.ID?.toString())
           .map((r, i) => {
             const driverInfo = allDrivers.find(
               (d) => d.DriverName === r.Driver && safeYear === d.Year,
             );
-            
+
             const teamInfo = driverInfo
               ? allTeams.find((t) => t.ID === driverInfo.TeamID)
               : null;
@@ -117,6 +134,7 @@ fetch(`/data/Session.csv?v=${Date.now()}`)
             };
           });
 
+        // Function to parse the time from the CSV file and convert it to seconds for simpler comparison of times
         const parseTime = (timeStr) => {
           const match = timeStr.match(/(\d+):(\d+):(\d+\.\d+)/);
           if (!match) return 99;
@@ -126,34 +144,47 @@ fetch(`/data/Session.csv?v=${Date.now()}`)
           return hours * 3600 + minutes * 60 + seconds;
         };
 
+        // Debugging
         console.log("Filtered Results:", filteredResults);
 
+        // Filter the laps data to get the laps for the selected session using the session ID 
         const sessionLaps = allLaps.filter(
           (l) => l.SessionID?.toString() === session.ID?.toString()
         );
+
+        // Create a map of driver IDs and their corresponding information 
         const driverMap = Object.fromEntries(
           allDrivers.map((d) => [d.ID.toString(), d]),
         );
 
+        // Store the data for the tyre stints for each driver
         const tyreData = {};
 
+        // Create a map of each driver name, position and team colour for the session 
         const driverPositionMap = Object.fromEntries(
           filteredResults.map((r) => [r.driver, r.pos, r.color]),
         );
 
+        // Loop through the laps for the session and for each lap
         sessionLaps.forEach((lap) => {
-          const driver = driverMap[lap.DriverID];
-          if (!driver) return;
 
+          // Get the driver information for the lap using the driver ID and if not found then return nothing
+          const driver = driverMap[lap.DriverID];
+          if (!driver) 
+            return;
+
+          // Get the drivers abbreviation code 
           const driverName = driver.DriverName.split(" ")
             .at(-1)
             .substring(0, 3)
             .toUpperCase();
 
+          // If the driver is not already in the tyreData map, add the driver and create an empty array for the laps
           if (!tyreData[driverName]) {
             tyreData[driverName] = [];
           }
 
+          // Add each lap for the driver to the tyreData wiht the lap number, tyre compound and time 
           tyreData[driverName].push({
             lap: Number(lap.LapNumber),
             tyre: lap.TyreCompound,
@@ -161,6 +192,8 @@ fetch(`/data/Session.csv?v=${Date.now()}`)
           });
         });
 
+        // Set the laps data with the lap numbers sorted, for the session by mapping through the tyreData and also sorting the positions 
+        // of the drivers from 1st to last
         const chartData = Object.entries(tyreData)
           .map(([driver, laps]) => ({
             driver,
@@ -175,9 +208,11 @@ fetch(`/data/Session.csv?v=${Date.now()}`)
             return pos1 - pos2;
           });
 
+        // Set the laps data for the session to be used in both Stat Feature components
         setLaps(chartData);
         console.log(chartData);
 
+        // Set data for default lap values
         const defaultLap = {
           Sector1Time: "0.0",
           Sector2Time: "0.0",
@@ -188,18 +223,27 @@ fetch(`/data/Session.csv?v=${Date.now()}`)
           Color: "white",
         };
 
+        // Get the fastest sector 1 time
         const fastestS1Lap =
+          // Check if the session laps data is not empty
           sessionLaps.length > 0
+            // If data is not empty, then reduce the session laps to find the lap with the fastest sector 1 time 
             ? sessionLaps.reduce(
               (fastest, lap) =>
                 parseTime(lap.Sector1Time) <
                   parseTime(fastest.Sector1Time)
+                  // If the current lap has a faster sector 1 time compared to the fastest lap found so far, then set the current lap as the fastest,
+                  // otherwise keep the fastest laps as it is
                   ? lap
                   : fastest,
+
+              // Start the reduction with the first lap as the initial fastest lap
               sessionLaps[0],
             )
+            // Set the default lap if there is no lap data
             : defaultLap;
 
+        // Similar to sector 2
         const fastestS2Lap =
           sessionLaps.length > 0
             ? sessionLaps.reduce(
@@ -212,6 +256,7 @@ fetch(`/data/Session.csv?v=${Date.now()}`)
             )
             : defaultLap;
 
+        // Similar to sector 3
         const fastestS3Lap =
           sessionLaps.length > 0
             ? sessionLaps.reduce(
@@ -224,6 +269,7 @@ fetch(`/data/Session.csv?v=${Date.now()}`)
             )
             : defaultLap;
 
+        // Get the fastest lap time using the same reduction method but comparing the total lap time instead of sector times
         const fastestLap =
           sessionLaps.length > 0
             ? sessionLaps.reduce(
@@ -236,8 +282,10 @@ fetch(`/data/Session.csv?v=${Date.now()}`)
             )
             : defaultLap;
 
+        // Function to get the driver information for a lap
         const getDriverInfo = (lap) => {
           if (!lap || !lap.DriverID)
+            // Return default driver information if the lap data is not valid or does not have a certain driver ID
             return {
               driver: "drivererror",
               fullname: "driver error",
@@ -245,14 +293,20 @@ fetch(`/data/Session.csv?v=${Date.now()}`)
               color: "white",
             };
 
+          // Set and initialise the driver ID from the lap data 
           const driverID = lap.DriverID.toString();
           console.log(driverID);
+
+          // Find the driver information using the driver ID from the allDrivers data 
           const driver = allDrivers.find((d) => d.ID.toString() === driverID);
           console.log(driver);
+
+          // Find the team information for the driver using the team ID from the driver information
           const team = driver
             ? allTeams.find((t) => t.ID.toString() === driver.TeamID.toString())
             : null;
 
+          // Return the information about the driver
           return {
             driver: driver
               ? driver.DriverName.split(" ")
@@ -266,6 +320,7 @@ fetch(`/data/Session.csv?v=${Date.now()}`)
           };
         };
 
+        // Get the driver information for each sector by passing the fastest sector lap data in the getDriverInfo function
         const s1Info = getDriverInfo(fastestS1Lap);
         console.log(s1Info);
         const s2Info = getDriverInfo(fastestS2Lap);
@@ -274,9 +329,10 @@ fetch(`/data/Session.csv?v=${Date.now()}`)
         console.log(s3Info);
         const fastestLapInfo = getDriverInfo(fastestLap);
 
+        // Function to fetch the driver information and headshot for the driver using the OpenF1 API 
         const fetchOpenF1Drivers = async () => {
-          console.log("Fetching session key...");
 
+          // Used to handle countries with different names in the OpenF1 API
           if (circuit.Country === "UK") {
             circuit.Country = "United Kingdom";
           } else if (circuit.Country === "USA") {
@@ -285,31 +341,43 @@ fetch(`/data/Session.csv?v=${Date.now()}`)
             circuit.Country = "United Arab Emirates";
           }
 
+          // Fetch the session information from the OpenF1 API using the circuit country, year and session type in a try catch block to handle any errors
           try {
-            const response = await fetch(
-              `https://api.openf1.org/v1/sessions?country_Name=${encodeURIComponent(circuit.Country)}&year=${safeYear}&session_name=${encodeURIComponent(safeSession)}`,
-            );
-            const sessionsData = await response.json();
 
+            // Fetch the session data with the given parameters
+            const response = await fetch(
+              `https://api.openf1.org/v1/sessions?country_Name=${(circuit.Country)}&year=${safeYear}&session_name=${(safeSession)}`,
+            );
+
+            // Check the response and if it is null or empty, then return nothing
+            const sessionsData = await response.json();
             if (!sessionsData || sessionsData.length === 0) {
-              console.warn("No sessions found from OpenF1 API");
               return;
             }
 
+            // Get the session key from the session data which is needed to fetch the driver information 
             const sessionKey = sessionsData[0].session_key;
             console.log("Session key:", sessionKey);
 
+            // Set the session key state variable 
             setSessionKey(sessionKey);
 
+            // Fetch the driver information for the fastest driver using the abbreviation and session key 
             const driverResponse = await fetch(
               `https://api.openf1.org/v1/drivers?name_acronym=${fastestLapInfo.driver}&session_key=${sessionKey}`,
             );
-            const driverData = await driverResponse.json();
 
+            // Store the driver information and set the the headshot URL 
+            const driverData = await driverResponse.json();
             console.log("Fastest driver info:", driverData[0]);
             setFastestDriverHeadshot(driverData[0].headshot_url);
+            
+          // Catch errors 
           } catch (error) {
+            // For debugging in console
             console.error("Error fetching from OpenF1 API:", error);
+
+            // Return default driver information 
             return {
               driver: "drivererror",
               fullname: "driver error",
@@ -319,14 +387,17 @@ fetch(`/data/Session.csv?v=${Date.now()}`)
           }
         };
 
+        // Fetch the fastest driver information using the fetchOpenF1Drivers function and store the information 
         const fastestDriverInfo = await fetchOpenF1Drivers();
         console.log(fastestDriverInfo);
 
+        // Set colours for the fastest drivers in each sector and the lap as a whole
         let s1Color = s1Info.color;
         let s2Color = s2Info.color;
         let s3Color = s3Info.color;
         let fastestLapColor = fastestLapInfo.color;
 
+        // Fade colour function used to fade colours when the drivers in the secotrs are from the same team to distinguish
         const fadeColor = (hex) => {
           const r = parseInt(hex.slice(1, 3), 16);
           const g = parseInt(hex.slice(3, 5), 16);
@@ -334,45 +405,56 @@ fetch(`/data/Session.csv?v=${Date.now()}`)
           return `rgba(${r}, ${g}, ${b}, 0.6)`;
         };
 
+        // If the drivers in the sectors are from the same team but different drivers, then fade one of the colours to distinguish between the drivers
         if (s1Info.team === s2Info.team && s1Info.driver !== s2Info.driver) {
           s2Color = fadeColor(s2Color);
         }
 
+        // Similar for comparing the fastest 1st and 3rd sector drivers
         if (s1Info.team === s3Info.team && s1Info.driver !== s3Info.driver) {
           s3Color = fadeColor(s3Color);
         }
 
-        if (s2Info.team === s3Info.team && s2Info.driver !== s3Info.driver) {
+        // Similar for comparing the fastest 2nd and 3rd sector drivers and checking if the 3rd sector driver is different from the 1st sector driver 
+        if (s2Info.team === s3Info.team && s2Info.driver !== s3Info.driver && s3Info.driver !== s1Info.driver) {
           s3Color = fadeColor(s3Color);
         }
 
+        // Set the fastest times and information for easy fetching
         setFastestTimes({
+
+          // Set the fastest times in each sector and the overall lap by parsing times using the function
           s1: parseTime(fastestS1Lap.Sector1Time),
           s2: parseTime(fastestS2Lap.Sector2Time),
           s3: parseTime(fastestS3Lap.Sector3Time),
           fastestLap: parseFloat(fastestLap.LapTimeSeconds),
 
+          // Set the driver for all sectors and the fastest lap
           s1Driver: s1Info.driver,
           s2Driver: s2Info.driver,
           s3Driver: s3Info.driver,
           fastestLapDriver: fastestLapInfo.fullname,
 
+          // Set the lap number for each sector and the fastest lap
           s1Lap: fastestS1Lap.LapNumber,
           s2Lap: fastestS2Lap.LapNumber,
           s3Lap: fastestS3Lap.LapNumber,
           fastestLapNumber: fastestLap.LapNumber,
 
+          // Set the team for each sector and the fastest lap
           s1Team: s1Info.team,
           s2Team: s2Info.team,
           s3Team: s3Info.team,
           fastestLapTeam: fastestLapInfo.team,
 
+          // Set the colours for each sector and the fastest lap
           s1Color: s1Color,
           s2Color: s2Color,
           s3Color: s3Color,
           fastestLapColor: fastestLapColor,
         });
 
+        // Finally, set the data for the session results to be displayed
         setData(filteredResults);
       },
     );
@@ -381,18 +463,19 @@ fetch(`/data/Session.csv?v=${Date.now()}`)
   return (
     <div className="flex justify-center items-start h-auto py-3 gap-10 pt-8">
       <div className="w-full max-w-md space-y-1">
+        {/* Main session results data displayed in a column order */}
         <div className="grid grid-cols-[3.5rem_1fr_4rem] items-center w-full px-4 pb-2">
           <p className="font-formula1 text-xs text-gray-400">POS</p>
           <p className="font-formula1 text-xs text-gray-400">DRIVER</p>
           <p className="font-formula1 text-xs text-right text-gray-400">GAP</p>
         </div>
 
+        
         {displayData.map((row, i) => (
           <div
             key={i}
-            className={`grid grid-cols-[3.5rem_1fr_5rem] items-center w-full px-4 py-2 ${
-              row.active ? "rounded-md bg-[#2d2d35]" : ""
-            }`}
+            className={`grid grid-cols-[3.5rem_1fr_5rem] items-center w-full px-4 py-2 ${row.active ? "rounded-md bg-[#2d2d35]" : ""
+              }`}
           >
             <div className="flex items-center gap-3">
               <p className="font-formula1bold text-sm min-w-[15px]">
@@ -417,7 +500,7 @@ fetch(`/data/Session.csv?v=${Date.now()}`)
             </div>
 
             <p className="font-formula1bold text-sm text-right font-formula1">
-                {(Number(row.gap)) == 0 ? "DNF" : Number(row.gap).toFixed(3)}
+              {(Number(row.gap)) == 0 ? "DNF" : Number(row.gap).toFixed(3)}
             </p>
           </div>
         ))}
@@ -457,9 +540,8 @@ fetch(`/data/Session.csv?v=${Date.now()}`)
                 {row.filePath ? (
                   <img
                     src={`/photos/${row.filePath}.avif`}
-                    className={`w-[500px] rounded-lg translate-x-6 pt-12 pb-12 ${
-                      displayData.length == 20 ? "pt-12 pb-12" : displayData.length == 21 ? "pt-16 pb-16" : displayData.length == 22 ? "pt-22 pb-22" : ""
-                    }`}
+                    className={`w-[500px] rounded-lg translate-x-6 pt-12 pb-12 ${displayData.length == 20 ? "pt-12 pb-12" : displayData.length == 21 ? "pt-16 pb-16" : displayData.length == 22 ? "pt-22 pb-22" : ""
+                      }`}
                   />
                 ) : (
                   <svg
