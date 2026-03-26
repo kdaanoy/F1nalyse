@@ -22,7 +22,7 @@ export default function Session({
 
   // State variables using the useState to control the selected session, data, key, and fastest times
   const [newData, setData] = useState([]);
-  const [newMapdata, setMapData] = useState([]);
+  const [newCircuitData, setCircuitData] = useState([]);
   const [fastestTimes, setFastestTimes] = useState({ s1: 0, s2: 0, s3: 0 });
   const [sessionKey, setSessionKey] = useState(null);
   const [fastestDriverHeadshot, setFastestDriverHeadshot] = useState(null);
@@ -34,7 +34,7 @@ export default function Session({
 
   // Variables to hold the data for the session
   const displayData = newData;
-  const displayMapData = newMapdata;
+  const displayCircuitData = newCircuitData;
 
   // useEffect to fetch the data from the CSV files and process the data when the year, GP and session is selected
   useEffect(() => {
@@ -72,7 +72,7 @@ export default function Session({
 
         // Find the circuit that matches the selected GP and if not found, return nothing
         const circuit = circuits.find((c) => c.Name === safeGP);
-        if (!circuit) 
+        if (!circuit)
           return;
 
         // Find the session that matches the selected GP, year, and session type, and if not found then return nothing
@@ -82,13 +82,13 @@ export default function Session({
             s.DateOfSession.includes(safeYear) &&
             s.Type === safeSession,
         );
-        if (!session) 
+        if (!session)
           return;
 
         console.log(session);
 
         // Set the map data for the session using the circuit and session information from the CSV file
-        setMapData([
+        setCircuitData([
           {
             name: circuit.OfficialName,
             circuit: circuit.Name,
@@ -130,7 +130,7 @@ export default function Session({
               team: teamInfo ? teamInfo.TeamName : "teamerror",
               color: teamInfo ? teamInfo.Color : "white",
               gap: r.TimeGap || "0",
-              active: i % 2 === 0 ? false : true,
+              greyBackground: i % 2 === 0 ? false : true,
             };
           });
 
@@ -170,7 +170,7 @@ export default function Session({
 
           // Get the driver information for the lap using the driver ID and if not found then return nothing
           const driver = driverMap[lap.DriverID];
-          if (!driver) 
+          if (!driver)
             return;
 
           // Get the drivers abbreviation code 
@@ -371,8 +371,8 @@ export default function Session({
             const driverData = await driverResponse.json();
             console.log("Fastest driver info:", driverData[0]);
             setFastestDriverHeadshot(driverData[0].headshot_url);
-            
-          // Catch errors 
+
+            // Catch errors 
           } catch (error) {
             // For debugging in console
             console.error("Error fetching from OpenF1 API:", error);
@@ -470,15 +470,18 @@ export default function Session({
           <p className="font-formula1 text-xs text-right text-gray-400">GAP</p>
         </div>
 
-        
+        {/* Go through the display data for the session results and display the position, driver with the team colour and name, and the gap to the leader */}
         {displayData.map((row, i) => (
           <div
             key={i}
-            className={`grid grid-cols-[3.5rem_1fr_5rem] items-center w-full px-4 py-2 ${row.active ? "rounded-md bg-[#2d2d35]" : ""
+            // Check if the row is greyBackground or not to set the background colour for the row. If false, then set the background to transparent 
+            // and if true, then set the background to grey 
+            className={`grid grid-cols-[3.5rem_1fr_5rem] items-center w-full px-4 py-2 ${row.greyBackground ? "rounded-md bg-[#2d2d35]" : ""
               }`}
           >
             <div className="flex items-center gap-3">
               <p className="font-formula1bold text-sm min-w-[15px]">
+                {/* Access the position of the driver */}
                 {row.pos}
               </p>
               <div className="w-[2px] h-3 bg-white"></div>
@@ -486,19 +489,23 @@ export default function Session({
 
             <div className="flex items-center gap-3">
               <p className="font-formula1bold text-sm uppercase">
+                {/* Access the driver abbreviation */}
                 {row.driver}
               </p>
               <div className="flex items-center gap-1.5 opacity-80">
                 <div
                   className="w-[3px] h-3 rounded-full"
+                  // Access the team colour for styling the background
                   style={{ backgroundColor: row.color }}
                 ></div>
                 <p className="font-formula1 text-[10px] text-gray-400">
+                  {/* Access team name */}
                   {row.team}
                 </p>
               </div>
             </div>
 
+            {/* If the gap is 0, then display DNF instead. Otherwise, display the gap to the leader with 3 decimal places */}
             <p className="font-formula1bold text-sm text-right font-formula1">
               {(Number(row.gap)) == 0 ? "DNF" : Number(row.gap).toFixed(3)}
             </p>
@@ -508,14 +515,17 @@ export default function Session({
 
       <div className="flex flex-col items-center gap-5">
         <div className="w-[800px] h-auto bg-[#14131a] brightness-125 shadow-[0_0_10px_#000000] rounded-[22px] overflow-hidden flex flex-col border border-white/10">
-          {displayMapData.map((row, i) => (
+          {/* Go through the circuit data for the session to display circuit information */}
+          {displayCircuitData.map((row, i) => (
             <div key={i} className="flex flex-col h-full w-full">
               <div className="w-full flex justify-center py-6 gap-2">
                 <img
                   className="w-13 h-11 rounded-2xl pl-2"
+                  // Access the photo for the circuit using the country name in lowercase
                   src={`/photos/${row.country.toLowerCase()}.png`}
                 ></img>
                 <p className="font-formula1bold text-[28px] uppercase tracking-tighter">
+                  {/* Access the name of the circuit */}
                   {row.name}
                 </p>
               </div>
@@ -530,6 +540,7 @@ export default function Session({
                   </div>
                   <div className="rounded-full shadow-sm bg-[#2d2d35] px-3 gap-3 flex items-center">
                     <p className="font-titiliumbold p-0.5">
+                      {/* Access the temperature for the session */}
                       {row.temperature}°C
                     </p>
                   </div>
@@ -537,13 +548,17 @@ export default function Session({
               </div>
 
               <div className="flex flex-col items-center relative py-1 pb-10">
+                {/* Check if there is a file path for the circuit map to display the track layout */}
                 {row.filePath ? (
                   <img
+                    // If there is a file path then access the track layout using the file path 
                     src={`/photos/${row.filePath}.avif`}
+                    // Set the size of the track image depending on how many drivers there are
                     className={`w-[500px] rounded-lg translate-x-6 pt-12 pb-12 ${displayData.length == 20 ? "pt-12 pb-12" : displayData.length == 21 ? "pt-16 pb-16" : displayData.length == 22 ? "pt-22 pb-22" : ""
                       }`}
                   />
                 ) : (
+                  // If there is no file path, then display the track layout using the sector coordinates from the CSV file and using SVG to draw it
                   <svg
                     viewBox="0 0 400 300"
                     className="w-[500px] translate-x-6"
@@ -558,49 +573,61 @@ export default function Session({
                   </svg>
                 )}
 
+
                 <div className="absolute bottom-5 flex gap-8">
                   <div className="text-center">
                     <p
                       className="text-[10px] font-formula1"
+                      // Style the driver name with the colour for the fastest sector 1 driver
                       style={{ color: fastestTimes.s1Color }}
                     >
+                      {/* Display the abbreviation for the fastest sector 1 driver */}
                       {fastestTimes.s1Driver}
                     </p>
                     <p className="text-[#b624ff] font-formula1bold">
+                      {/* Display the fastest sector 1 time */}
                       S1: {fastestTimes.s1}
                     </p>
                   </div>
                   <div className="text-center">
                     <p
                       className="text-[10px] font-formula1"
+                      // Style the driver name with the colour for the fastest sector 2 driver
                       style={{ color: fastestTimes.s2Color }}
                     >
+                      {/* Display the abbreviation for the fastest sector 2 driver */}
                       {fastestTimes.s2Driver}
                     </p>
                     <p className="text-[#b624ff] font-formula1bold">
+                      {/* Display the fastest sector 2 time */}
                       S2: {fastestTimes.s2}
                     </p>
                   </div>
                   <div className="text-center">
                     <p
                       className="text-[10px] font-formula1"
+                      // Style the driver name with the colour for the fastest sector 3 driver
                       style={{ color: fastestTimes.s3Color }}
                     >
+                      {/* Display the abbreviation for the fastest sector 3 driver */}
                       {fastestTimes.s3Driver}
                     </p>
                     <p className="text-[#b624ff] font-formula1bold">
+                      {/* Display the fastest sector 3 time */}
                       S3: {fastestTimes.s3}
                     </p>
                   </div>
                 </div>
               </div>
 
+              {/* Display the circuit information */}
               <div className="grid grid-cols-4 w-full py-6 px-10 border-t border-white/5">
                 <div className="flex flex-col items-center border-r border-white/10">
                   <span className="text-[10px] text-gray-500 font-formula1">
                     COUNTRY
                   </span>
                   <span className="font-formula1bold text-sm uppercase">
+                    {/* Display the country for the circuit */}
                     {row.country}
                   </span>
                 </div>
@@ -609,6 +636,7 @@ export default function Session({
                     CITY
                   </span>
                   <span className="font-formula1bold text-sm uppercase">
+                    {/* Display the city for the circuit */}
                     {row.city}
                   </span>
                 </div>
@@ -617,6 +645,7 @@ export default function Session({
                     CORNERS
                   </span>
                   <span className="font-formula1bold text-sm">
+                    {/* Display the number of corners for the circuit */}
                     {row.corners}
                   </span>
                 </div>
@@ -625,6 +654,7 @@ export default function Session({
                     LENGTH
                   </span>
                   <span className="font-formula1bold text-sm">
+                    {/* Display the length of the circuit in KM */}
                     {row.length} KM
                   </span>
                 </div>
@@ -633,49 +663,49 @@ export default function Session({
           ))}
         </div>
 
-        {displayMapData.map((row, i) => (
-          <div
-            key={`fastest-${i}`}
-            className="relative w-[800px] h-auto shadow-lg rounded-[22px] overflow-hidden flex border border-white/10"
-            style={{
-              backgroundColor: fastestTimes.fastestLapColor || "#14131a",
-            }}
-          >
-            <div className="absolute inset-0 flex items-center justify-center ">
-              <p className="text-[140px] font-formula1bold italic text-white/30 tracking-widest select-none">
-                FASTEST
+        
+        <div
+          className="relative w-[800px] h-auto shadow-lg rounded-[22px] overflow-hidden flex border border-white/10"
+          style={{
+            // Style the background colour for the fastest driver and set the default to black
+            backgroundColor: fastestTimes.fastestLapColor || "#000000",
+          }}
+        >
+          {/* Display the word FASTEST in the background */}
+          <div className="absolute inset-0 flex items-center justify-center ">
+            <p className="text-[140px] font-formula1bold italic text-white/30 tracking-widest select-none">
+              FASTEST
+            </p>
+          </div>
+
+          <div className="relative flex h-full w-full items-end p-1">
+            {/* Display the headshot for the fastest driver */}
+            <img
+              src={fastestDriverHeadshot}
+              className="absolute w-32 h-32 translate-x-12"
+            />
+
+            <div className="backdrop-blur-md bg-white/2 border border-white/20 rounded-xl px-3 py-1 shadow-lg">
+              <p className="font-formula1bold text-[22px] uppercase tracking-tighter">
+                {/* Display the name of the fastest driver for the lap or unknown for defalt */}
+                {fastestTimes.fastestLapDriver || "Unknown Driver"}
               </p>
             </div>
-
-            <div className="relative flex h-full w-full items-end p-1">
-              <div
-                className="absolute w-32 h-32 translate-x-12"
-                style={{
-                  backgroundImage: `url(${fastestDriverHeadshot})`,
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
-                }}
-              />
-
-              <div className="backdrop-blur-md bg-white/2 border border-white/20 rounded-xl px-3 py-1 shadow-lg">
-                <p className="font-formula1bold text-[22px] uppercase tracking-tighter">
-                  {fastestTimes.fastestLapDriver || "Unknown Driver"}
-                </p>
-              </div>
-              <div className="flex flex-col justify-center items-center gap-1 pl-50">
-                <p className="font-formula1bold text-[30px] text-white">
-                  Lap {Number(fastestTimes.fastestLapNumber) || "-"}
-                </p>
-                <p className="font-formula1bold text-[53px] text-white">
-                  {fastestTimes.fastestLap
-                    ? fastestTimes.fastestLap.toFixed(3)
-                    : "0.000"}
-                  s
-                </p>
-              </div>
+            <div className="flex flex-col justify-center items-center gap-1 pl-50">
+              <p className="font-formula1bold text-[30px] text-white">
+                {/* Display the lap number for the fastest lap or default to 0 */}
+                Lap {Number(fastestTimes.fastestLapNumber) || "0"}
+              </p>
+              <p className="font-formula1bold text-[53px] text-white">
+                {/* Check if there is a fastest lap time and if there is then display the lap to 3 decimal places, otherwise set to 0.000 */}
+                {fastestTimes.fastestLap
+                  ? fastestTimes.fastestLap.toFixed(3)
+                  : "0.000"}
+                s
+              </p>
             </div>
           </div>
-        ))}
+        </div>
       </div>
     </div>
   );
