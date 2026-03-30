@@ -14,3 +14,4 @@ const MenuGP = ({ item, setActiveGP, setActiveGPMenu }) => {
   );
 };
 export default MenuGP;
+

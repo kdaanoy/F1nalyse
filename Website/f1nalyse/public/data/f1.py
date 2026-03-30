@@ -598,7 +598,7 @@ def train(city, country):
     y = all_driver_data["Position"]
 
     # Split the data into training and testing sets and train it
-    X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=38)
+    X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
 
     param_grid = {
         "n_estimators": [200, 300, 400, 500, 600],
@@ -608,7 +608,7 @@ def train(city, country):
         "colsample_bytree": [0.8, 1.0]
     }
 
-    model = XGBRegressor(random_state=38)
+    model = XGBRegressor(random_state=42)
 
     grid_search = GridSearchCV(
         estimator=model,

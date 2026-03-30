@@ -82,20 +82,20 @@ export default function Navbar({
     setActiveSession,
     gps,
     setGPS,
-    sessions,
-    setSessions,
     setActivatePredict,
 }) {
     // State variables using the useState to control the menus and the loading state for fetching data
     const [activeYearMenu, setActiveYearMenu] = useState(false);
     const [activeGPMenu, setActiveGPMenu] = useState(false);
     const [activeSessionMenu, setActiveSessionMenu] = useState(false);
+    const [sessions, setSessions] = useState([]);
     const [loading, setLoading] = useState(false);
 
     // A function used to parse the year from the date in the Session.csv which can be in either 2 formats
     function parseYear(dateStr) {
         // If the string is empty then return a null value
-        if (!dateStr) return null;
+        if (!dateStr) 
+            return null;
 
         // If the date contains a / then it is in the format DD/MM/YYYY which is used when fetching data from 2018-2025
         if (dateStr.includes("/")) {
@@ -114,7 +114,8 @@ export default function Navbar({
     // useEffect for checking if there is a given year and if there is then check all circuits for that year
     useEffect(() => {
         // Return nothing if there is no active year
-        if (!activeYear) return;
+        if (!activeYear) 
+            return;
 
         // Functions used to set the activeGP to null, set the list of GPs to an empty list, set the GP menu to false and set the loading state to true
         // while fetching
@@ -144,7 +145,8 @@ export default function Navbar({
 
                 // Filter the sessions for the active year using the parseYear function to retrieve the year from the date
                 const gpYears = parsed.data.filter((row) => {
-                    if (!row.DateOfSession) return false;
+                    if (!row.DateOfSession) 
+                        return false;
                     console.log(row.DateOfSession);
 
                     const year = parseYear(row.DateOfSession);
@@ -185,10 +187,10 @@ export default function Navbar({
     // useEffect for checking if there is a given year and GP
     useEffect(() => {
         // If there is no active GP or year then return nothing
-        if (!activeGP || !activeYear) return;
+        if (!activeGP || !activeYear) 
+            return;
 
         // Functions used to set the sessions to an empty list and the session menu to false
-        // setActiveSession = { setActiveSession };
         setSessions([]);
         setActiveSessionMenu(false);
 
@@ -268,7 +270,8 @@ export default function Navbar({
                             className={`${activeYearMenu
                                 ? "rounded-br-none rounded-bl-none"
                                 : "rounded-br-md rounded-bl-md"
-                                } rounded-tl-md rounded-tr-md bg-[#2d2d35] p-1.5 w-full rounded-md text-black hover:bg-[#44444b] duration-200 flex items-center gap-1 cursor-pointer hover:outline-2 hover:outline-white ease-in`}
+                                } rounded-tl-md rounded-tr-md bg-[#2d2d35] p-1.5 w-full rounded-md text-black hover:bg-[#44444b] duration-200 
+                                flex items-center gap-1 cursor-pointer hover:outline-2 hover:outline-white ease-in`}
                         >
 
                             {/* Checks if the activeYear is null and therefore sets the text of the button to "Select Year" or the active year */}

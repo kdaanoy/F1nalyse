@@ -22,7 +22,7 @@ export default function StatFeature2({ laps }) {
   // State to keep track of drivers visible on the chart 
   const [visibleDrivers, setVisibleDrivers] = useState({});
 
-  // When there are laps data passed as the parameter, set the visibile drivers to all the drivers as true
+  // When there are laps data passed as the parameter, set the visible state of all drivers to true
   useEffect(() => {
     if (laps.length > 0) {
       setVisibleDrivers(
