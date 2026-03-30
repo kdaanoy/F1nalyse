@@ -84,7 +84,7 @@ export default function Session({
         // Debugging
         console.log(session);
 
-        // Set the map data for the session using the circuit and session information from the CSV file
+        // Set the data for the session using the circuit and session information from the CSV file
         setCircuitData([
           {
             name: circuit.OfficialName,
@@ -118,7 +118,7 @@ export default function Session({
 
             return {
               pos: r.Position,
-              driver: driverInfo ? driverInfo.DriverName.trim()
+              driver: driverInfo ? driverInfo.DriverName
                 .split(" ")
                 .at(-1)
                 .substring(0, 3)
