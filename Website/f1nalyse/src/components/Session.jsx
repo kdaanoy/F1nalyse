@@ -200,8 +200,8 @@ export default function Session({
               "white",
           }))
           .sort((a, b) => {
-            const pos1 = driverPositionMap[a.driver] || Infinity;
-            const pos2 = driverPositionMap[b.driver] || Infinity;
+            const pos1 = driverPositionMap[a.driver] || 99;
+            const pos2 = driverPositionMap[b.driver] || 99;
             return pos1 - pos2;
           });
 
