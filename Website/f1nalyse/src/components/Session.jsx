@@ -457,7 +457,7 @@ export default function Session({
     <div className="flex justify-center items-start h-auto py-3 gap-10 pt-8">
       <div className="w-full max-w-md space-y-1">
         {/* Main session results data displayed in a column order */}
-        <div className="grid grid-cols-[56px_1fr_64px] items-center w-full px-4 pb-2">
+        <div className="grid grid-cols-[53px_1fr_100px] items-center w-full px-4 pb-2">
           <p className="font-formula1 text-xs text-gray-400">POS</p>
           <p className="font-formula1 text-xs text-gray-400">DRIVER</p>
           <p className="font-formula1 text-xs text-right text-gray-400">GAP</p>
@@ -466,10 +466,9 @@ export default function Session({
         {/* Go through the display data for the session results and display the position, driver with the team colour and name, and the gap to the leader */}
         {displayData.map((row, i) => (
           <div
-            key={i}
             // Check if the row is greyBackground or not to set the background colour for the row. If false, then set the background to transparent 
             // and if true, then set the background to grey 
-            className={`grid grid-cols-[3.5rem_1fr_5rem] items-center w-full px-4 py-2 ${row.greyBackground ? "rounded-md bg-[#2d2d35]" : ""
+            className={`grid grid-cols-[53px_1fr_100px] items-center w-full px-4 py-2 ${row.greyBackground ? "rounded-md bg-[#2d2d35]" : ""
               }`}
           >
             <div className="flex items-center gap-3">
@@ -507,7 +506,7 @@ export default function Session({
       </div>
 
       <div className="flex flex-col items-center gap-5">
-        <div className="w-[800px] h-auto bg-[#14131a] brightness-125 shadow-[0_0_10px_#000000] rounded-[22px] overflow-hidden flex flex-col border border-white/10">
+        <div className="w-[800px] h-auto bg-[#14131a] brightness-125 shadow-xl shadow-black rounded-[22px] overflow-hidden flex flex-col border border-white/10">
           {/* Go through the circuit data for the session to display circuit information */}
           {displayCircuitData.map((row, i) => (
             <div key={i} className="flex flex-col h-full w-full">
@@ -540,14 +539,14 @@ export default function Session({
                 </div>
               </div>
 
-              <div className="flex flex-col items-center relative py-1 pb-10">
+              <div className="flex flex-col items-center relative ">
                 {/* Check if there is a file path for the circuit map to display the track layout */}
                 {row.filePath ? (
                   <img
                     // If there is a file path then access the track layout using the file path 
                     src={`/photos/${row.filePath}.avif`}
                     // Set the size of the track image depending on how many drivers there are
-                    className={`w-[500px] rounded-lg translate-x-6 pt-12 pb-12 ${displayData.length == 20 ? "pt-12 pb-12" : displayData.length == 21 ? "pt-16 pb-16" : displayData.length == 22 ? "pt-22 pb-22" : ""
+                    className={`w-[500px] rounded-lg translate-x-6 pt-12 pb-12 ${displayData.length == 20 ? "pt-5 pb-5" : displayData.length == 21 ? "pt-16 pb-15" : displayData.length == 22 ? "pt-22 pb-21" : ""
                       }`}
                   />
                 ) : (
@@ -567,7 +566,7 @@ export default function Session({
                 )}
 
 
-                <div className="absolute bottom-5 flex gap-8">
+                <div className="flex gap-8 pb-2">
                   <div className="text-center">
                     <p
                       className="text-[10px] font-formula1"
