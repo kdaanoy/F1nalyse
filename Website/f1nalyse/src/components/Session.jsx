@@ -24,7 +24,6 @@ export default function Session({
   const [newData, setData] = useState([]);
   const [newCircuitData, setCircuitData] = useState([]);
   const [fastestTimes, setFastestTimes] = useState({ s1: 0, s2: 0, s3: 0 });
-  const [sessionKey, setSessionKey] = useState(null);
   const [fastestDriverHeadshot, setFastestDriverHeadshot] = useState(null);
 
   // Preset values for the year, GP, and the session when the website is first loaded
@@ -356,9 +355,6 @@ export default function Session({
             const sessionKey = sessionsData[0].session_key;
             console.log("Session key:", sessionKey);
 
-            // Set the session key state variable 
-            setSessionKey(sessionKey);
-
             // Fetch the driver information for the fastest driver using the abbreviation and session key 
             const driverResponse = await fetch(
               `https://api.openf1.org/v1/drivers?name_acronym=${fastestLapInfo.driver}&session_key=${sessionKey}`,
@@ -461,7 +457,7 @@ export default function Session({
     <div className="flex justify-center items-start h-auto py-3 gap-10 pt-8">
       <div className="w-full max-w-md space-y-1">
         {/* Main session results data displayed in a column order */}
-        <div className="grid grid-cols-[3.5rem_1fr_4rem] items-center w-full px-4 pb-2">
+        <div className="grid grid-cols-[56px_1fr_64px] items-center w-full px-4 pb-2">
           <p className="font-formula1 text-xs text-gray-400">POS</p>
           <p className="font-formula1 text-xs text-gray-400">DRIVER</p>
           <p className="font-formula1 text-xs text-right text-gray-400">GAP</p>
