@@ -11,7 +11,6 @@ function App() {
   const [activeYear, setActiveYear] = useState(null);
   const [activeGP, setActiveGP] = useState(null);
   const [activeSession, setActiveSession] = useState(null);
-  const [gps, setGPS] = useState([]);
   const [laps, setLaps] = useState([]);
   const [activatePredict, setActivatePredict] = useState(false);
 
@@ -23,7 +22,6 @@ function App() {
         activeYear={activeYear} setActiveYear={setActiveYear}
         activeGP={activeGP} setActiveGP={setActiveGP}
         activeSession={activeSession} setActiveSession={setActiveSession}
-        gps={gps} setGPS={setGPS}
         setActivatePredict={setActivatePredict}
       />  
       

@@ -80,14 +80,13 @@ export default function Navbar({
     setActiveGP,
     activeSession,
     setActiveSession,
-    gps,
-    setGPS,
     setActivatePredict,
 }) {
     // State variables using the useState to control the menus and the loading state for fetching data
     const [activeYearMenu, setActiveYearMenu] = useState(false);
     const [activeGPMenu, setActiveGPMenu] = useState(false);
     const [activeSessionMenu, setActiveSessionMenu] = useState(false);
+    const [gps, setGPS] = useState([]);
     const [sessions, setSessions] = useState([]);
     const [loading, setLoading] = useState(false);
 
