@@ -72,8 +72,6 @@ export default function Session({
 
         // Find the circuit that matches the selected GP and if not found, return nothing
         const circuit = circuits.find((c) => c.Name === safeGP);
-        if (!circuit)
-          return;
 
         // Find the session that matches the selected GP, year, and session type, and if not found then return nothing
         const session = sessions.find(
@@ -82,9 +80,6 @@ export default function Session({
             s.DateOfSession.includes(safeYear) &&
             s.Type === safeSession,
         );
-        // If there is no session, return nothing
-        if (!session)
-          return;
 
         // Debugging
         console.log(session);
