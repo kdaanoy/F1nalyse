@@ -78,13 +78,15 @@ export default function Session({
         // Find the session that matches the selected GP, year, and session type, and if not found then return nothing
         const session = sessions.find(
           (s) =>
-            s.CircuitID?.toString().trim() === circuit.ID?.toString().trim() &&
+            s.CircuitID?.toString() === circuit.ID?.toString() &&
             s.DateOfSession.includes(safeYear) &&
             s.Type === safeSession,
         );
+        // If there is no session, return nothing
         if (!session)
           return;
 
+        // Debugging
         console.log(session);
 
         // Set the map data for the session using the circuit and session information from the CSV file

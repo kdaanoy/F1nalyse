@@ -33,17 +33,20 @@ function App() {
         activeSession={activeSession}
         setLaps={setLaps}
       />
+
       <StatFeature1 
 
         // Pass in the laps data and active year to display stints for all drivers
         laps={laps}
         activeYear={activeYear}
       />
+
       <StatFeature2 
 
         // Pass in the laps data to display the lap times for each driver
         laps={laps}
       />
+      
       <Predict2026 
 
         // Pass in the state variable of the predict component to control visibility
