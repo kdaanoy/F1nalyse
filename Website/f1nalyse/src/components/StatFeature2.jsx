@@ -32,7 +32,7 @@ export default function StatFeature2({ laps }) {
   }, [laps]);
 
   // Custom tooltip for the line chart with the lap number as a parameter 'label' 
-  function CustomTooltip({ active, payload, label }) {
+  function CustomTooltip({ payload, label }) {
     return (
       <div className="bg-[#14131a] p-2 rounded shadow-lg border-[2px] border-[white] w-40">
 
@@ -96,7 +96,7 @@ export default function StatFeature2({ laps }) {
   });
 
   // Sort the processed data by lap number from the first to last lap
-  processedData.sort((a, b) => a.lap - b.lap);
+  processedData.sort((lap1, lap2) => lap1.lap - lap2.lap);
 
   // Debugging
   console.log(processedData);
@@ -118,7 +118,7 @@ export default function StatFeature2({ laps }) {
             {/* For the grid lines of the chart */}
             <CartesianGrid strokeDasharray="5 5" stroke="#333" />
 
-            <XAxis dataKey="lap" stroke="grey" fontFamily="formula1bold" />
+            <XAxis dataKey="lap" stroke="grey" fontFamily="formula1bold" interval={1}/>
             <YAxis
               stroke="grey"
               // Set the range of the y axis

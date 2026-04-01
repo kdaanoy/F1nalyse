@@ -51,7 +51,7 @@ function App() {
 
         // Pass in the state variable of the predict component to control visibility
         activatePredict={activatePredict}
-        close={() => setActivatePredict(false)}
+        close={()=> setActivatePredict(false)}
       />
     </div>
   )

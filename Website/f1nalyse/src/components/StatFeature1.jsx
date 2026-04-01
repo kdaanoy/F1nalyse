@@ -56,8 +56,9 @@ const tyreImages2 = {
 
 // Custom tooltip component for the bar chart
 function CustomTooltip({ payload, label, active, activeYear }) {
+
   // If the tooltip is not active or there is no payload, return null
-  if (!active || !payload?.length) 
+  if (!active || payload.length < 1) 
     return null;
 
   // Filter through the tyre compounds and only display only if there is usage for that compounds greater than 0 laps
@@ -106,8 +107,8 @@ function CustomTooltip({ payload, label, active, activeYear }) {
   );
 }
 
-// Style the custom label renderer for the bars in the bar chart
-const renderCustomLabel = (data) => {
+// Style the custom label for the bars in the bar chart
+const CustomLabel = (data) => {
   const { value, x, y, width, height } = data;
 
   if (!value || width <= 0) 
@@ -247,7 +248,7 @@ export default function StatFeature1({ laps, activeYear }) {
                   );
                   const color = driverEntry?.color || "#FFFFFF";
 
-                  // Return the chart with customised styling for the x and y axis
+                  // Return the chart with customised styling for the y axis
                   return (
                     <text
                       x={x - 10}
@@ -273,7 +274,7 @@ export default function StatFeature1({ laps, activeYear }) {
                   dataKey={compound}
                   stackId="a"
                   fill={compoundColours[compound]}
-                  label={renderCustomLabel}
+                  label={CustomLabel}
                 />
               ))}
             </BarChart>

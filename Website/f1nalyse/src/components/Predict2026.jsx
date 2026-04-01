@@ -1,7 +1,6 @@
 // Imports used
-import { use, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { FaArrowRight } from "react-icons/fa";
-import { useState } from "react";
 import Papa from "papaparse";
 
 export default function Predict2026({ activatePredict, close }) {
@@ -9,7 +8,7 @@ export default function Predict2026({ activatePredict, close }) {
     // State for the list of circuits, team colours and the prediction data for the selected GP
     const [circuitgps, setCircuitGPs] = useState([]);
     const [predictionData, setPredictionData] = useState([]);
-    const [teamColors, setTeamColors] = useState({});
+    const [teamColours, setTeamColours] = useState({});
 
     // List of all the grand prix with their name, round and date
     const grandprixes = [{ name: "Australian Grand Prix", round: 1, date: "03/08/2026" },
@@ -76,12 +75,12 @@ export default function Predict2026({ activatePredict, close }) {
                     })
 
                     // Sort the circuits based on the round of the grand prixes list by finding the circuit name in the grand prix list and comparing the rounds
-                    .sort((a, b) => {
-                        const nameA = validcircuits.find(shortName => a.OfficialName.includes(shortName));
-                        const nameB = validcircuits.find(shortName => b.OfficialName.includes(shortName));
+                    .sort((circuit1, circuit2) => {
+                        const circuitcompare1 = validcircuits.find(shortName => circuit1.OfficialName.includes(shortName));
+                        const circuitcompare2 = validcircuits.find(shortName => circuit2.OfficialName.includes(shortName));
 
                         // Return the difference between the rounds of the 2 circuits to sort them in the correct order
-                        return grandprixes.find(gp => gp.name === nameA).round - grandprixes.find(gp => gp.name === nameB).round;
+                        return grandprixes.find(gp => gp.name === circuitcompare1).round - grandprixes.find(gp => gp.name === circuitcompare2).round;
                     });
 
                 // Set the circuitGPs to the sorted circuits
@@ -100,14 +99,14 @@ export default function Predict2026({ activatePredict, close }) {
 
                 // Create a dictionary mapping of the team names to their colours by looping through the result and setting the 
                 // team name as the key and the colour as the value
-                const colorMap = {};
+                const colourMap = {};
                 result.forEach(row => {
-                    colorMap[row.TeamName] = row.Color;
+                    colourMap[row.TeamName] = row.Colour;
                 });
 
                 // Set the colour map
-                setTeamColors(colorMap);
-                console.log(colorMap);
+                setTeamColours(colourMap);
+                console.log(colourMap);
             });
     }, []);
 
@@ -137,7 +136,8 @@ export default function Predict2026({ activatePredict, close }) {
     useEffect(() => {
 
         // If there is no predicted GP selected, return nothing
-        if (!gpprediction) return;
+        if (!gpprediction) 
+            return;
 
         // Fetch the data from the prediction csv file
         fetch(`/data/race${gpprediction}_predictions.csv`).then((res) => res.text())
@@ -180,7 +180,8 @@ export default function Predict2026({ activatePredict, close }) {
                             // Find the grand prix for each circuit by checkig if the circuit official name includes the grand prix name 
                             const gpData = grandprixes.find(gp => circuit.OfficialName?.includes(gp.name));
 
-                            // Check if the current date is greater than the grand prix date used to see whether to show the button or not
+                            // Check if there is a value for gpData and then return true or false depending on whether the current date is greater 
+                            // than the grand prix date used to see whether to show the button or not
                             const showButton = gpData ? accessible(new Date(gpData.date)) : false;
 
                             return (
@@ -225,18 +226,17 @@ export default function Predict2026({ activatePredict, close }) {
                                 {predictionData.map((prediction, index) => {
 
                                     // Set the team colour and last name of the driver for the image
-                                    const teamColor = teamColors[prediction.Team]
+                                    const teamColour = teamColours[prediction.Team]
                                     const lastName = prediction.Driver?.split(" ").at(-1).toLowerCase();
 
                                     // If statement to only show the top 3 predictions in a larger card
                                     if (index + 1 <= 3) {
 
-
                                         return (
                                             <div
                                                 key={index}
                                                 className="relative flex flex-row w-[350px] h-[110px] rounded-xl"
-                                                style={{ backgroundColor: teamColor }}>
+                                                style={{ backgroundColour: teamColour }}>
 
                                                 <span className="absolute inset-0 flex items-center justify-center text-[90px] font-formula1bold text-white/50 italic">
                                                     {index + 1}
@@ -278,7 +278,7 @@ export default function Predict2026({ activatePredict, close }) {
                                 if (index < 3 || index == 22) return null;
 
                                 // Set the team colour and the actual position of the driver
-                                const teamColor = teamColors[prediction.Team] || "#1c1c24";
+                                const teamColour = teamColours[prediction.Team] || "#1c1c24";
                                 const actualPosition = index + 1;
                                 return (
                                     <div
@@ -292,7 +292,7 @@ export default function Predict2026({ activatePredict, close }) {
                                             <p className="text-white font-formula1bold text-xs uppercase">
                                                 {prediction.Driver}
                                                 <span className="text-gray-500 p-1">-</span>
-                                                <span style={{ color: teamColor }}>{prediction.Team}</span>
+                                                <span style={{ colour: teamColour }}>{prediction.Team}</span>
                                             </p>
                                         </div>
                                     </div>
