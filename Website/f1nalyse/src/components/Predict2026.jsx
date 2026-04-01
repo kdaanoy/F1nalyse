@@ -101,7 +101,7 @@ export default function Predict2026({ activatePredict, close }) {
                 // team name as the key and the colour as the value
                 const colourMap = {};
                 result.forEach(row => {
-                    colourMap[row.TeamName] = row.Colour;
+                    colourMap[row.TeamName] = row.Color;
                 });
 
                 // Set the colour map
@@ -236,7 +236,7 @@ export default function Predict2026({ activatePredict, close }) {
                                             <div
                                                 key={index}
                                                 className="relative flex flex-row w-[350px] h-[110px] rounded-xl"
-                                                style={{ backgroundColour: teamColour }}>
+                                                style={{ backgroundColor: teamColour }}>
 
                                                 <span className="absolute inset-0 flex items-center justify-center text-[90px] font-formula1bold text-white/50 italic">
                                                     {index + 1}
@@ -292,7 +292,7 @@ export default function Predict2026({ activatePredict, close }) {
                                             <p className="text-white font-formula1bold text-xs uppercase">
                                                 {prediction.Driver}
                                                 <span className="text-gray-500 p-1">-</span>
-                                                <span style={{ colour: teamColour }}>{prediction.Team}</span>
+                                                <span style={{ color: teamColour }}>{prediction.Team}</span>
                                             </p>
                                         </div>
                                     </div>

@@ -102,7 +102,7 @@ export default function StatFeature2({ laps }) {
   console.log(processedData);
 
   return (
-    <div className="flex justify-center items-start pt-10 h-400">
+    <div className="flex justify-center items-start pt-10 h-220">
       <div className="relative w-320 h-190 bg-[#14131a] brightness-125 shadow-[0_0_10px_#000000] rounded-[20px]">
         {/* Title of the chart*/}
         <div className="p-5 font-formula1bold text-[30px]">

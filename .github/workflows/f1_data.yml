@@ -1,7 +1,11 @@
+# Workflow name
 name: Update F1 Data 
 
+# Help specify inputs that can be passed into the workflow
 on:
   workflow_dispatch:
+    
+    # 2 inputs, which is the function to perform and the round number if needed
     inputs:
       action:
         description: 'Function: storeData, updateData, train'
@@ -10,24 +14,34 @@ on:
         description: 'Race Round Number'
         required: false
 
+# Jobs to run in the workflow
 jobs:
   f1_update:
+
+    # Runs on a runner environment
     runs-on: ubuntu-latest
 
+    # Steps to perform the job
     steps:
-      - name: Checkout repository
+
+      # Checkout the repository to access the data
+      - name: Checkout Repository
         uses: actions/checkout@v6
 
+      # Set up a Python environment for running the F1 functions
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
+          # The Python version I use to run the data, also FastF1 can be used in this version
           python-version: "3.11"
 
-      - name: Install dependencies
+      # Install all the packages to run each function
+      - name: Install Packages
         run: |
           pip install pandas fastf1 scikit-learn xgboost
 
-      - name: Run F1 function
+      # Run the function based on the input action
+      - name: Run F1 Function
         run: |
           cd Website/f1nalyse/public/data
           if [ "${{ github.event.inputs.action }}" = "storeData" ]; then
@@ -37,14 +51,14 @@ jobs:
           elif [ "${{ github.event.inputs.action }}" = "train" ]; then
             python f1.py train ${{ github.event.inputs.round }}
           else
-            echo "Invalid action: ${{ github.event.inputs.action }}"
+            echo "Incorrect function: ${{ github.event.inputs.action }}"
             exit 1
           fi
 
+      # Commit and push changes back to repository
       - name: Update Files
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add Website/f1nalyse/public/data/*.csv
-          git commit -m "Update F1 data" || echo "No changes to commit"
+          git config user.name "F1 Bot"
+          git add Website/f1nalyse/public/data/
+          git commit -m "Update F1 data" || echo "No commits"
           git push
