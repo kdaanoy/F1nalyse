@@ -656,7 +656,7 @@ if __name__ == "__main__":
         round = int(sys.argv[2])
         store_data(round)
     elif action == "updateData":
-        get_driver_data(2026).to_csv("driver_data.csv", index=False)
+        get_driver_data(2026).to_csv("driver_data.csv", index=False, mode = "a", header = False)
     elif action == "train":
         round = int(sys.argv[2])
         city, country = get_city_country(round)
