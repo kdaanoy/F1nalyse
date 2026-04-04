@@ -465,45 +465,64 @@ export default function Session({
         </div>
 
         {/* Go through the display data for the session results and display the position, driver with the team colour and name, and the gap to the leader */}
-        {displayData.map((row, i) => (
-          <div
-            // Check if the row is greyBackground or not to set the background colour for the row. If false, then set the background to transparent 
-            // and if true, then set the background to grey 
-            className={`grid grid-cols-[53px_1fr_100px] items-center w-full px-4 py-2 ${row.greyBackground ? "rounded-md bg-[#2d2d35]" : ""
-              }`}
-          >
-            <div className="flex items-center gap-3">
-              <p className="font-formula1bold text-sm min-w-[15px]">
-                {/* Access the position of the driver */}
-                {row.pos}
-              </p>
-              <div className="w-[2px] h-3 bg-white"></div>
-            </div>
+        {(() => {
+          let lapNumber = 1
+          return displayData.map((row, i) => {
+            const gap = Number(row.gap);
+            const gapBehind = i > 0 ? Number(displayData[i - 1].gap) || 0;
 
-            <div className="flex items-center gap-3">
-              <p className="font-formula1bold text-sm uppercase">
-                {/* Access the driver abbreviation */}
-                {row.driver}
-              </p>
-              <div className="flex items-center gap-1.5 opacity-80">
-                <div
-                  className="w-[3px] h-3 rounded-full"
-                  // Access the team colour for styling the background
-                  style={{ backgroundColor: row.color }}
-                ></div>
-                <p className="font-formula1 text-[10px] text-gray-400">
-                  {/* Access team name */}
-                  {row.team}
+            let gapNumber = "";
+            if (i === 0) {
+              gapNumber = "LEADER";
+            } else if (gap === 0) {
+              gapNumber = "DNF";
+            } else if (gap < gapBehind && i != 1) {
+              gapNumber = `+${lapNumber} LAPS`;
+              lapNumber++;
+            } else {
+              gapNumber = `+${gap.toFixed(3)}s`;
+            }
+            
+            return (
+            <div
+              // Check if the row is greyBackground or not to set the background colour for the row. If false, then set the background to transparent 
+              // and if true, then set the background to grey 
+              className={`grid grid-cols-[53px_1fr_100px] items-center w-full px-4 py-2 ${row.greyBackground ? "rounded-md bg-[#2d2d35]" : ""
+                }`}
+            >
+              <div className="flex items-center gap-3">
+                <p className="font-formula1bold text-sm min-w-[15px]">
+                  {/* Access the position of the driver */}
+                  {row.pos}
                 </p>
+                <div className="w-[2px] h-3 bg-white"></div>
               </div>
-            </div>
 
-            {/* If the gap is 0, then display DNF instead. Otherwise, display the gap to the leader with 3 decimal places */}
-            <p className="font-formula1bold text-sm text-right font-formula1">
-              {(Number(row.gap)) == 0 ? "DNF" : Number(row.gap).toFixed(3)}
-            </p>
-          </div>
-        ))}
+              <div className="flex items-center gap-3">
+                <p className="font-formula1bold text-sm uppercase">
+                  {/* Access the driver abbreviation */}
+                  {row.driver}
+                </p>
+                <div className="flex items-center gap-1.5 opacity-80">
+                  <div
+                    className="w-[3px] h-3 rounded-full"
+                    // Access the team colour for styling the background
+                    style={{ backgroundColor: row.color }}
+                  ></div>
+                  <p className="font-formula1 text-[10px] text-gray-400">
+                    {/* Access team name */}
+                    {row.team}
+                  </p>
+                </div>
+              </div>
+
+              {/* If the gap is 0, then display DNF instead. Otherwise, display the gap to the leader with 3 decimal places */}
+              <p className="font-formula1bold text-sm text-right font-formula1">
+                {gapNumber}
+              </p>
+            </div>
+          );
+        })})()}
       </div>
 
       <div className="flex flex-col items-center gap-5">
