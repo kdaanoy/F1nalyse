@@ -13,6 +13,7 @@ dfteams = pd.read_csv("Team.csv")
 dfresults = pd.read_csv("Results.csv")
 dflaps = pd.read_csv("Laps.csv")
 dfwcc = pd.read_csv("WCC.csv")
+dfdriverdata = pd.read_csv("driver_data.csv")
 
 # Define the drivers and teams for the 2026 season
 drivers_2026 = pd.DataFrame({
@@ -266,7 +267,12 @@ def get_driver_data(year):
             for index, row in dfresults.iterrows():
                 if row['SessionID'] == session_id:
                     driver = row['Driver']
-                                        # Use a try exception block to check the team of the driver in the previous season
+                    if driver == "Sergio Perez":
+                        driver = "Sergio Pérez"
+                    elif driver == "Nico Hulkenberg":
+                        driver = "Nico Hülkenberg"
+
+                    # Use a try exception block to check the team of the driver in the previous season
                     try:    
                         teamID = dfdrivers[(dfdrivers['DriverName'] == driver) & (dfdrivers['Year'] == int(year))].iloc[0]['TeamID']
                         print(teamID)
@@ -275,6 +281,11 @@ def get_driver_data(year):
                         team = pd.Series(["Unknown"])
                     
                     if driver in drivers_2026['Driver'].values:
+                        if driver == "Sergio Pérez":
+                            driver = "Sergio Perez"
+                        elif driver == "Nico Hülkenberg":
+                            driver = "Nico Hulkenberg"
+
                         # Retrieve the position of the driver in that race
                         position = row['Position']
 
@@ -464,52 +475,12 @@ def set_2026_features(city, country):
             else:
                 circuit_id = None
 
-        last3avg = []
-        last5avg = []
-        teammatelast3avg = []
-        teammatelast5avg = []
-        
-        loop = 0
-        dflast5sessions = dfsession[(dfsession['Type'] == 'Race' )]['ID'][-5:]
-        for sessionid in dflast5sessions:
-            if row['ID'] in dflast5sessions:
-                dfresultsdrivers = dfresults[(dfresults['SessionID'] == sessionid) & (dfresults['Driver'] == driver)]
-                loop += 1
-                for index, row in dfresultsdrivers.iterrows():
-                    last5avg.append(row['Position'])
-                    if (loop >= 3):
-                        last3avg.append(row['Position'])
+        dflastdata = dfdriverdata[dfdriverdata['Driver'] == driver].tail(1)
+        last3avg = dflastdata['Last3Avg'].iloc[0] if dflastdata['Last3Avg'].iloc[0] != 0 else 10
+        last5avg = dflastdata['Last5Avg'].iloc[0] if dflastdata['Last5Avg'].iloc[0] != 0 else 10
+        teammatelast3avg = dflastdata['TeammateLast3Avg'].iloc[0] if dflastdata['TeammateLast3Avg'].iloc[0] != 0 else 10
+        teammatelast5avg = dflastdata['TeammateLast5Avg'].iloc[0] if dflastdata['TeammateLast5Avg'].iloc[0] != 0 else 10
 
-                dfrestofdrivers = dfresults[(dfresults['SessionID'] == sessionid) & (dfresults['Driver'] != driver)]
-
-                # Loop through all other drivers in the same race
-                for index, row_other in dfrestofdrivers.iterrows():
-                    # Skip if it's the same driver
-                    if row_other['Driver'] == driver:
-                        continue
-
-                    # Get the other driver's team
-                    other_driver_row = dfdrivers[(dfdrivers['DriverName'] == row_other['Driver']) & (dfdrivers['Year'] == int(2026))]
-                    if not other_driver_row.empty:
-                        other_team_id = other_driver_row.iloc[0]['TeamID']
-                        other_team_name = dfteams[dfteams['ID'] == other_team_id]['TeamName'].iloc[0]
-
-                        # Check if the other driver is in the same team
-                        if other_team_name == team.iloc[0]:
-                            teammate_name = row_other['Driver']
-
-                for index, row in dfresults.iterrows():
-                    if row['SessionID'] == row['ID'] and row['Driver'] == teammate_name:
-                        teammatelast5avg.append(row['Position'])
-                        if (loop >= 3):
-                            teammatelast3avg.append(row['Position'])
-                                
-        last3avg = sum(last3avg) / len(last3avg) if len(last3avg) > 0 else 10
-        last5avg = sum(last5avg) / len(last5avg) if len(last5avg) > 0 else 10
-        teammatelast3avg = sum(teammatelast3avg) / len(teammatelast3avg) if len(teammatelast3avg) > 0 else 10
-        teammatelast5avg = sum(teammatelast5avg) / len(teammatelast5avg) if len(teammatelast5avg) > 0 else 10
-                
-        
         # Sets a list for career positions and a dnf counter for the driver
         career_positions = []
         dnf = 0
@@ -649,19 +620,20 @@ def get_city_country(round):
 # store_data(1)
 # train("Melbourne", "Australia")
 
-if __name__ == "__main__":
-    action = sys.argv[1]
+# if __name__ == "__main__":
+#     action = sys.argv[1]
 
-    if action == "storeData":
-        round = int(sys.argv[2])
-        store_data(round)
-    elif action == "updateData":
-        get_driver_data(2026).to_csv("driver_data.csv", index=False, mode = "a", header = False)
-    elif action == "train":
-        round = int(sys.argv[2])
-        city, country = get_city_country(round)
-        train(city, country)
-        
+#     if action == "storeData":
+#         round = int(sys.argv[2])
+#         store_data(round)
+#     elif action == "updateData":
+#         get_driver_data(2026).to_csv("driver_data.csv", index=False, mode = "a", header = False)
+#     elif action == "train":
+#         round = int(sys.argv[2])
+#         city, country = get_city_country(round)
+#         train(city, country)
 
+updateData = get_driver_data(2026)
+updateData.to_csv("driver_data.csv", index=False, mode = "a", header = False)
 
     

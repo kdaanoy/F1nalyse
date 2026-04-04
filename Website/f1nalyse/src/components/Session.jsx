@@ -25,6 +25,7 @@ export default function Session({
   const [newCircuitData, setCircuitData] = useState([]);
   const [fastestTimes, setFastestTimes] = useState({ s1: 0, s2: 0, s3: 0 });
   const [fastestDriverHeadshot, setFastestDriverHeadshot] = useState(null);
+  const [loopCount, setLoopCount] = useState(0);
 
   // Preset values for the year, GP, and the session when the website is first loaded
   const safeYear = activeYear || "2026";
