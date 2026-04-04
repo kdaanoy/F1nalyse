@@ -469,7 +469,7 @@ export default function Session({
           let lapNumber = 1
           return displayData.map((row, i) => {
             const gap = Number(row.gap);
-            const gapBehind = i > 0 ? Number(displayData[i - 1].gap) || 0;
+            const gapBehind = i > 0 ? Number(displayData[i - 1].gap) : 0;
 
             let gapNumber = "";
             if (i === 0) {
