@@ -1,4 +1,4 @@
-"ID",DriverName,Color,TeamID,DriverNumber,Year
+ID,DriverName,Color,TeamID,DriverNumber,Year
 0,Lewis Hamilton,#00f5d0,4,44,2018
 1,Sebastian Vettel,#dc0000,0,5,2018
 2,Kimi Räikkönen,#dc0000,0,7,2018
@@ -255,3 +255,5 @@
 253,Gabriel Bortoleto,#f22324,86,5,2026
 254,Isack Hadjar,#0600ef,5,6,2026
 255,Pierre Gasly,#fe86bc,81,10,2026
+256,Romain Grosjean,#bd9e57,2,8,2020
+257,Robert Kubica,#00a0dd,9,88,2020

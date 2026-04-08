@@ -60,7 +60,8 @@ export default function Session({
         // CSV data  are stored as variables and parsed using Papaparse
         const circuits = Papa.parse(circuitCsv, { header: true }).data;
         const sessions = Papa.parse(sessionCsv, { header: true }).data;
-        // Results data is parsed with skipEmptyLines and dynamicTyping to handle empty lines and convert to the right data types
+        // Results data is parsed with skipEmptyLines and dynamicTyping to handle 
+        // empty lines and convert to the right data types
         // Used for debugging
         const allResults = Papa.parse(resultsCsv, {
           header: true, skipEmptyLines: true,
@@ -73,7 +74,8 @@ export default function Session({
         // Find the circuit that matches the selected GP and if not found, return nothing
         const circuit = circuits.find((c) => c.Name === safeGP);
 
-        // Find the session that matches the selected GP, year, and session type, and if not found then return nothing
+        // Find the session that matches the selected GP, year, and session type, and if not 
+        // found then return nothing
         const session = sessions.find(
           (s) =>
             s.CircuitID?.toString() === circuit.ID?.toString() &&
@@ -185,12 +187,12 @@ export default function Session({
           tyreData[driverName].push({
             lap: Number(lap.LapNumber),
             tyre: lap.TyreCompound,
-            time: lap.LapTimeSeconds,
+            time: parseTime(lap.LapTime).toFixed(3),
           });
         });
 
-        // Set the laps data with the lap numbers sorted, for the session by mapping through the tyreData and also sorting the positions 
-        // of the drivers from 1st to last
+        // Set the laps data with the lap numbers sorted, for the session by mapping through the 
+        // tyreData and also sorting the positions of the drivers from 1st to last
         const chartData = Object.entries(tyreData)
           .map(([driver, laps]) => ({
             driver,
@@ -224,13 +226,14 @@ export default function Session({
         const fastestS1Lap =
           // Check if the session laps data is not empty
           sessionLaps.length > 0
-            // If data is not empty, then reduce the session laps to find the lap with the fastest sector 1 time 
+            // If data is not empty, then reduce the session laps to find the 
+            // lap with the fastest sector 1 time 
             ? sessionLaps.reduce(
               (fastest, lap) =>
                 parseTime(lap.Sector1Time) <
                   parseTime(fastest.Sector1Time)
-                  // If the current lap has a faster sector 1 time compared to the fastest lap found so far, then set the current lap as the fastest,
-                  // otherwise keep the fastest laps as it is
+                  // If the current lap has a faster sector 1 time compared to the fastest lap 
+                  // found so far, then set the current lap as the fastest, otherwise keep the fastest laps as it is
                   ? lap
                   : fastest,
 
@@ -266,7 +269,8 @@ export default function Session({
             )
             : defaultLap;
 
-        // Get the fastest lap time using the same reduction method but comparing the total lap time instead of sector times
+        // Get the fastest lap time using the same reduction method but comparing 
+        // the total lap time instead of sector times
         const fastestLap =
           sessionLaps.length > 0
             ? sessionLaps.reduce(
@@ -282,7 +286,8 @@ export default function Session({
         // Function to get the driver information for a lap
         const getDriverInfo = (lap) => {
           if (!lap || !lap.DriverID)
-            // Return default driver information if the lap data is not valid or does not have a certain driver ID
+            // Return default driver information if the lap data is not valid or does not 
+            // have a certain driver ID
             return {
               driver: "drivererror",
               fullname: "driver error",
@@ -317,7 +322,8 @@ export default function Session({
           };
         };
 
-        // Get the driver information for each sector by passing the fastest sector lap data in the getDriverInfo function
+        // Get the driver information for each sector by passing the fastest 
+        // sector lap data in the getDriverInfo function
         const s1Info = getDriverInfo(fastestS1Lap);
         console.log(s1Info);
         const s2Info = getDriverInfo(fastestS2Lap);
@@ -338,7 +344,8 @@ export default function Session({
             circuit.Country = "United Arab Emirates";
           }
 
-          // Fetch the session information from the OpenF1 API using the circuit country, year and session type in a try catch block to handle any errors
+          // Fetch the session information from the OpenF1 API using the circuit country, year and session 
+          // type in a try catch block to handle any errors
           try {
 
             // Fetch the session data with the given parameters
@@ -399,7 +406,8 @@ export default function Session({
           return `rgba(${r}, ${g}, ${b}, 0.6)`;
         };
 
-        // If the drivers in the sectors are from the same team but different drivers, then fade one of the colours to distinguish between the drivers
+        // If the drivers in the sectors are from the same team but different drivers, then fade one of the 
+        // colours to distinguish between the drivers
         if (s1Info.team === s2Info.team && s1Info.driver !== s2Info.driver) {
           s2Color = fadeColor(s2Color);
         }
@@ -409,7 +417,8 @@ export default function Session({
           s3Color = fadeColor(s3Color);
         }
 
-        // Similar for comparing the fastest 2nd and 3rd sector drivers and checking if the 3rd sector driver is different from the 1st sector driver 
+        // Similar for comparing the fastest 2nd and 3rd sector drivers and checking if the 3rd sector driver 
+        // is different from the 1st sector driver 
         if (s2Info.team === s3Info.team && s2Info.driver !== s3Info.driver && s3Info.driver !== s1Info.driver) {
           s3Color = fadeColor(s3Color);
         }
@@ -421,7 +430,7 @@ export default function Session({
           s1: parseTime(fastestS1Lap.Sector1Time),
           s2: parseTime(fastestS2Lap.Sector2Time),
           s3: parseTime(fastestS3Lap.Sector3Time),
-          fastestLap: parseFloat(fastestLap.LapTimeSeconds),
+          fastestLap: parseTime(fastestLap.LapTime),
 
           // Set the driver for all sectors and the fastest lap
           s1Driver: s1Info.driver,
@@ -467,6 +476,7 @@ export default function Session({
         {/* Go through the display data for the session results and display the position, driver with the team colour and name, and the gap to the leader */}
         {(() => {
           let lapNumber = 1
+          let lastGap;
           return displayData.map((row, i) => {
             const gap = Number(row.gap);
             const gapBehind = i > 0 ? Number(displayData[i - 1].gap) : 0;
@@ -479,9 +489,18 @@ export default function Session({
             } else if (gap < gapBehind && i != 1) {
               gapNumber = `+${lapNumber} LAPS`;
               lapNumber++;
-            } else {
+            } else if (lapNumber > 1) {
+              if (lapNumber > 2) {
+                gapNumber = `+${lapNumber - 1} LAPS`;
+              } else {
+                gapNumber = `+1 LAP`;
+              }
+            }
+              else {
               gapNumber = `+${gap.toFixed(3)}s`;
             }
+
+            lastGap = gapNumber;
             
             return (
             <div

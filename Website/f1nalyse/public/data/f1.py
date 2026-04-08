@@ -11,7 +11,7 @@ dfsession = pd.read_csv("Session.csv")
 dfdrivers = pd.read_csv("Drivers.csv", encoding='utf-8')
 dfteams = pd.read_csv("Team.csv")
 dfresults = pd.read_csv("Results.csv")
-dflaps = pd.read_csv("Laps.csv")
+dflaps = pd.read_csv("Laps.csv", low_memory=False)
 dfwcc = pd.read_csv("WCC.csv")
 dfdriverdata = pd.read_csv("driver_data.csv")
 
@@ -436,7 +436,10 @@ def set_2026_features(city, country):
 
     qualifying = {}
     for index, row in results.iterrows():
-        qualifying[row['FullName']] = int(row['Position'])
+        if pd.isna(row['Position']):
+            qualifying[row['FullName']] = 100
+        else:
+            qualifying[row['FullName']] = int(row['Position'])
 
     # This will be where each row of data for each driver will be stored before converting into a data frame
     data = []
@@ -474,6 +477,13 @@ def set_2026_features(city, country):
                 break
             else:
                 circuit_id = None
+
+        if driver == "Sergio Pérez":
+            driver = "Sergio Perez"
+        elif driver == "Nico Hülkenberg":
+            driver = "Nico Hulkenberg"
+        else: 
+            driver = driver
 
         dflastdata = dfdriverdata[dfdriverdata['Driver'] == driver].tail(1)
         last3avg = dflastdata['Last3Avg'].iloc[0] if dflastdata['Last3Avg'].iloc[0] != 0 else 10
@@ -604,7 +614,7 @@ def train(city, country):
     race1['Position'] = predictions
     race1 = race1.sort_values(by="Position")
     print(race1)
-    race1.to_csv("race" + str(round) + "_predictions.csv", index=False)
+    race1.to_csv("race2_predictions.csv", index=False)
 
     # Evaluate the error of the model
     y_pred = grid_search.best_estimator_.predict(X_test)
@@ -620,20 +630,17 @@ def get_city_country(round):
 # store_data(1)
 # train("Melbourne", "Australia")
 
-# if __name__ == "__main__":
-#     action = sys.argv[1]
+if __name__ == "__main__":
+    action = sys.argv[1]
 
-#     if action == "storeData":
-#         round = int(sys.argv[2])
-#         store_data(round)
-#     elif action == "updateData":
-#         get_driver_data(2026).to_csv("driver_data.csv", index=False, mode = "a", header = False)
-#     elif action == "train":
-#         round = int(sys.argv[2])
-#         city, country = get_city_country(round)
-#         train(city, country)
+    if action == "storeData":
+        round = int(sys.argv[2])
+        store_data(round)
+    elif action == "updateData":
+        get_driver_data(2026).to_csv("driver_data.csv", index=False, mode = "a", header = False)
+    elif action == "train":
+        round = int(sys.argv[2])
+        city, country = get_city_country(round)
+        train(city, country)
 
-updateData = get_driver_data(2026)
-updateData.to_csv("driver_data.csv", index=False, mode = "a", header = False)
-
-    
+# train("Suzuka", "Japan")    

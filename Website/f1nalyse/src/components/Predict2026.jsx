@@ -52,7 +52,8 @@ export default function Predict2026({ activatePredict, close }) {
         return lastGP?.round ?? 1;
     });
 
-    // useEffect to fetch the circuit data and filter it to only include the circuits that are in the grand prixes list and then sort it
+    // useEffect to fetch the circuit data and filter it to only include the circuits that are in the grand prixes list 
+    // and then sort it
     useEffect(() => {
 
         // Fetch the data from the Circuit csv file and parse it using PapaParse
@@ -67,14 +68,16 @@ export default function Predict2026({ activatePredict, close }) {
                 const sortedCircuits = circuits
                     .filter(circuit => {
 
-                        // Check if the circuits official name includes any of the valid circuit names from the grand prix list
-                        // The some function is used to check if any of the valid circuit names are included in the circuit official name
+                        // Check if the circuits official name includes any of the valid circuit names from the grand prix 
+                        // list. The some function is used to check if any of the valid circuit names are included in the circuit 
+                        // official name
                         return validcircuits.some(shortName =>
                             circuit.OfficialName?.includes(shortName)
                         );
                     })
 
-                    // Sort the circuits based on the round of the grand prixes list by finding the circuit name in the grand prix list and comparing the rounds
+                    // Sort the circuits based on the round of the grand prixes list by finding the circuit name in the grand 
+                    // prix list and comparing the rounds
                     .sort((circuit1, circuit2) => {
                         const circuitcompare1 = validcircuits.find(shortName => circuit1.OfficialName.includes(shortName));
                         const circuitcompare2 = validcircuits.find(shortName => circuit2.OfficialName.includes(shortName));
@@ -150,7 +153,8 @@ export default function Predict2026({ activatePredict, close }) {
             });
     }, [gpprediction]);
 
-    // Create a new variable for the current date and a function to return true or false depending on if todays date is greater than the given date
+    // Create a new variable for the current date and a function to return true or false 
+    // depending on if todays date is greater than the given date
     const today = new Date();
     const accessible = (date) => {
         return (today >= date);
