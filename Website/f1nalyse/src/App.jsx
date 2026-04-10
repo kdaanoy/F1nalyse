@@ -39,12 +39,15 @@ function App() {
         // Pass in the laps data and active year to display stints for all drivers
         laps={laps}
         activeYear={activeYear}
+        activeSession={activeSession}
       />
 
       <StatFeature2 
 
         // Pass in the laps data to display the lap times for each driver
         laps={laps}
+        activeYear={activeYear}
+        activeSession={activeSession}
       />
       
       <Predict2026 

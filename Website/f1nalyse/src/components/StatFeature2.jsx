@@ -11,7 +11,7 @@ import {
 import { useState, useEffect } from "react";
 
 // Component for the lap times line chart for each driver with laps passed as a parameter
-export default function StatFeature2({ laps }) {
+export default function StatFeature2({ laps, activeYear, activeSession }) {
 
   // Debugging
   console.log(laps);
@@ -91,7 +91,7 @@ export default function StatFeature2({ laps }) {
       }
 
       // Assign the lap time to the driver in the processed data for that lap number
-      processedData[i][driver.driver] = lap.time;
+      processedData[i][driver.driver] = lap.time > 0 ? lap.time : null;
     });
   });
 
@@ -102,11 +102,12 @@ export default function StatFeature2({ laps }) {
   console.log(processedData);
 
   return (
-    <div className="flex justify-center items-start pt-10 h-220">
-      <div className="relative w-320 h-190 bg-[#14131a] brightness-125 shadow-[0_0_10px_#000000] rounded-[20px]">
-        {/* Title of the chart*/}
-        <div className="p-5 font-formula1bold text-[30px]">
-          <p>Lap Times</p>
+    activeYear == null && activeSession == null || activeYear >= 2018 && activeSession == "Race" || activeYear >= 2026 ? (
+      <div className="flex justify-center items-start pt-10 h-220">
+        <div className="relative w-320 h-190 bg-[#14131a] brightness-125 shadow-[0_0_10px_#000000] rounded-[20px]">
+          {/* Title of the chart*/}
+          <div className="p-5 font-formula1bold text-[30px]">
+            <p>Lap Times</p>
         </div>
 
         <ResponsiveContainer width="100%" height={600}>
@@ -191,5 +192,6 @@ export default function StatFeature2({ laps }) {
         </div>
       </div>
     </div>
+    ) : null
   );
 }

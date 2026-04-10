@@ -484,7 +484,8 @@ def set_2026_features(city, country):
             driver = "Nico Hulkenberg"
         else: 
             driver = driver
-
+        
+        # Retrieve the last 3 and 5 average for the driver and teammate from the driver_data table
         dflastdata = dfdriverdata[dfdriverdata['Driver'] == driver].tail(1)
         last3avg = dflastdata['Last3Avg'].iloc[0] if dflastdata['Last3Avg'].iloc[0] != 0 else 10
         last5avg = dflastdata['Last5Avg'].iloc[0] if dflastdata['Last5Avg'].iloc[0] != 0 else 10
@@ -581,6 +582,7 @@ def train(city, country):
     # Split the data into training and testing sets and train it
     X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
 
+    # Set of parameters for the grid search 
     param_grid = {
         "n_estimators": [200, 300, 400, 500, 600],
         "learning_rate": [0.01, 0.05, 0.1],
@@ -589,8 +591,13 @@ def train(city, country):
         "colsample_bytree": [0.8, 1.0]
     }
 
+    # Define the XGBoost regression model
     model = XGBRegressor(random_state=42)
 
+    # Uses grid search given the parameter grid to find the best combination of parameters for the model
+    # The scoring metric is negative MAE because scikit learn maximises scores by default, so using the negative MAE will minimise the MAE
+    # Cross validation is 5 which means data is split into 5 parts with the model trained 5 times each with a different validation set and 
+    # the results are averaged to find the best performance score. Verbose is set to 1 to show progress and n_jobs is set to -1 to use all processors
     grid_search = GridSearchCV(
         estimator=model,
         param_grid=param_grid,

@@ -130,7 +130,7 @@ const CustomLabel = (data) => {
 };
 
 // Pass in parameters for the laps and active year of the session to determine the tyre compounds used and the colour scheme for the chart
-export default function StatFeature1({ laps, activeYear }) {
+export default function StatFeature1({ laps, activeYear, activeSession }) {
 
   // Debugging
   console.log(activeYear);
@@ -149,7 +149,7 @@ export default function StatFeature1({ laps, activeYear }) {
 
   // Process the data to get the number of laps for each compouund for each driver 
   const processedData = laps.map((driver) => {
-
+    
     // Count the number of laps for each compound 
     const counts = {};
 
@@ -172,7 +172,8 @@ export default function StatFeature1({ laps, activeYear }) {
   // Debugging
   console.log(processedData);
 
-  return (
+  return ( 
+    activeYear == null && activeSession == null || activeYear >= 2018 && activeSession == "Race" || activeYear >= 2026 ? (
     <div className="flex justify-center items-start pt-10 h-205">
       <div className="relative w-320 h-190 bg-[#14131a] brightness-125 shadow-[0_0_10px_#000000] rounded-[20px]">
         <div className="p-5 font-formula1bold text-[30px]">
@@ -274,7 +275,26 @@ export default function StatFeature1({ laps, activeYear }) {
                   dataKey={compound}
                   stackId="a"
                   fill={compoundColours[compound]}
-                  label={CustomLabel}
+                  label={(data) => {
+                    const { x, y, width, height, index } = data;
+
+                    const value = processedData[index][compound];
+                    if (!value || value <= 0 || width < 20) 
+                      return null;
+                    return (
+                      <text
+                        x={x + width / 2}
+                        y={y + height / 2}
+                        fill="#000"
+                        fontSize={12}
+                        fontFamily="formula1bold"
+                        textAnchor="middle"
+                        dominantBaseline="middle"
+                      >
+                        {value}
+                      </text>
+                    );
+                  }}
                 />
               ))}
             </BarChart>
@@ -283,5 +303,7 @@ export default function StatFeature1({ laps, activeYear }) {
 
       </div>
     </div>
+    ) : null
+    
   );
 }

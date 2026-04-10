@@ -133,8 +133,13 @@ export default function Session({
             };
           });
 
+        console.log(filteredResults)
+        console.log(safeSession)
         // Function to parse the time from the CSV file and convert it to seconds for simpler comparison of times
         const parseTime = (timeStr) => {
+          if (!timeStr) {
+            return 0;
+          }
           const match = timeStr.match(/(\d+):(\d+):(\d+\.\d+)/);
           if (!match) return 99;
           const hours = parseInt(match[1]);
@@ -458,6 +463,7 @@ export default function Session({
         });
 
         // Finally, set the data for the session results to be displayed
+        console.log(filteredResults)
         setData(filteredResults);
       },
     );
@@ -493,7 +499,7 @@ export default function Session({
               if (lapNumber > 2) {
                 gapNumber = `+${lapNumber - 1} LAPS`;
               } else {
-                gapNumber = `+1 LAP`;
+                gapNumber = `+1 LAPS`;
               }
             }
               else {
@@ -545,7 +551,7 @@ export default function Session({
       </div>
 
       <div className="flex flex-col items-center gap-5">
-        <div className="w-[800px] h-auto bg-[#14131a] brightness-125 shadow-xl shadow-black rounded-[22px] overflow-hidden flex flex-col border border-white/10">
+        <div className="w-[800px] h-[auto] bg-[#14131a] brightness-125 shadow-xl shadow-black rounded-[22px] overflow-hidden flex flex-col border border-white/10">
           {/* Go through the circuit data for the session to display circuit information */}
           {displayCircuitData.map((row, i) => (
             <div key={i} className="flex flex-col h-full w-full">
@@ -577,8 +583,8 @@ export default function Session({
                   </div>
                 </div>
               </div>
-
-              <div className="flex flex-col items-center relative ">
+              
+              <div className={`flex flex-col items-center relative ${activeYear == 2026 || activeYear == null ? "" : activeYear != 2026 && activeSession != "Race" ? "pb-31 pt-20" : ""}`} >
                 {/* Check if there is a file path for the circuit map to display the track layout */}
                 {row.filePath ? (
                   <img
@@ -604,8 +610,8 @@ export default function Session({
                   </svg>
                 )}
 
-
-                <div className="flex gap-8 pb-2">
+                {activeYear == 2026 || activeYear == null || activeYear < 2026 && activeSession == "Race" ? (
+                <div className="flex gap-8 pb-3">
                   <div className="text-center">
                     <p
                       className="text-[10px] font-formula1"
@@ -649,6 +655,7 @@ export default function Session({
                     </p>
                   </div>
                 </div>
+                ): null}
               </div>
 
               {/* Display the circuit information */}
@@ -694,7 +701,8 @@ export default function Session({
           ))}
         </div>
 
-        
+
+      {activeYear == null && activeSession == null || activeYear >= 2018 && activeSession == "Race" || activeYear >= 2026 ? (
         <div
           className="relative w-[800px] h-auto shadow-lg rounded-[22px] overflow-hidden flex border border-white/10"
           style={{
@@ -709,34 +717,62 @@ export default function Session({
             </p>
           </div>
 
-          <div className="relative flex h-full w-full items-end p-1">
             {/* Display the headshot for the fastest driver */}
-            <img
-              src={fastestDriverHeadshot}
-              className="absolute w-32 h-32 translate-x-12"
-            />
-
-            <div className="backdrop-blur-md bg-white/2 border border-white/20 rounded-xl px-3 py-1 shadow-lg">
-              <p className="font-formula1bold text-[22px] uppercase tracking-tighter">
-                {/* Display the name of the fastest driver for the lap or unknown for defalt */}
-                {fastestTimes.fastestLapDriver || "Unknown Driver"}
-              </p>
+            {activeYear >= 2023 || activeYear == null || activeSession == null || activeGP == null? (
+            <div className="relative flex h-full w-full items-end p-1">
+                <img
+                src={fastestDriverHeadshot}
+                className="absolute w-32 h-32 translate-x-12"
+              />
+                <div className="backdrop-blur-md bg-white/2 border border-white/20 rounded-xl px-3 py-1 shadow-lg">
+                  <p className="font-formula1bold text-[22px] uppercase tracking-tighter">
+                    {/* Display the name of the fastest driver for the lap or unknown for defalt */}
+                    {fastestTimes.fastestLapDriver || "Unknown Driver"}
+                  </p>
+                </div>
+                <div className="flex flex-col justify-center items-center gap-1 pl-50">
+                  <p className="font-formula1bold text-[30px] text-white">
+                    {/* Display the lap number for the fastest lap or default to 0 */}
+                    Lap {Number(fastestTimes.fastestLapNumber) || "0"}
+                  </p>
+                  <p className="font-formula1bold text-[53px] text-white">
+                    {/* Check if there is a fastest lap time and if there is then display the lap to 3 decimal places, otherwise set to 0.000 */}
+                    {fastestTimes.fastestLap
+                      ? fastestTimes.fastestLap.toFixed(3)
+                      : "0.000"}
+                    s
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <div className="relative flex h-full w-full items-end p-1">
+                <div className="backdrop-blur-md bg-white/2 border border-white/20 rounded-xl px-10 py-8 shadow-lg">
+                  <p className="font-formula1bold text-[22px] uppercase tracking-tighter">
+                    {/* Display the name of the fastest driver for the lap or unknown for defalt */}
+                    {fastestTimes.fastestLapDriver || "Unknown Driver"}
+                  </p>
+                  <p>
+                    {fastestTimes.fastestLapTeam}
+                  </p>
+                </div>
+                <div className="flex flex-col justify-center items-center gap-1 pl-40">
+                  <p className="font-formula1bold text-[30px] text-white">
+                    {/* Display the lap number for the fastest lap or default to 0 */}
+                    Lap {Number(fastestTimes.fastestLapNumber) || "0"}
+                  </p>
+                  <p className="font-formula1bold text-[53px] text-white">
+                    {/* Check if there is a fastest lap time and if there is then display the lap to 3 decimal places, otherwise set to 0.000 */}
+                    {fastestTimes.fastestLap
+                      ? fastestTimes.fastestLap.toFixed(3)
+                      : "0.000"}
+                    s
+                </p>
+              </div>
             </div>
-            <div className="flex flex-col justify-center items-center gap-1 pl-50">
-              <p className="font-formula1bold text-[30px] text-white">
-                {/* Display the lap number for the fastest lap or default to 0 */}
-                Lap {Number(fastestTimes.fastestLapNumber) || "0"}
-              </p>
-              <p className="font-formula1bold text-[53px] text-white">
-                {/* Check if there is a fastest lap time and if there is then display the lap to 3 decimal places, otherwise set to 0.000 */}
-                {fastestTimes.fastestLap
-                  ? fastestTimes.fastestLap.toFixed(3)
-                  : "0.000"}
-                s
-              </p>
-            </div>
+            )}
+            
           </div>
-        </div>
+      ) : null}
       </div>
     </div>
   );
