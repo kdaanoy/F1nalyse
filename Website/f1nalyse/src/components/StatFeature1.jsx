@@ -277,8 +277,10 @@ export default function StatFeature1({ laps, activeYear, activeSession }) {
                   fill={compoundColours[compound]}
                   label={(data) => {
                     const { x, y, width, height, index } = data;
+                    
+                    const row = processedData[index];
+                    const value = row ? row[compound] : null;
 
-                    const value = processedData[index][compound];
                     if (!value || value <= 0 || width < 20) 
                       return null;
                     return (

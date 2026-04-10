@@ -91,7 +91,7 @@ export default function StatFeature2({ laps, activeYear, activeSession }) {
       }
 
       // Assign the lap time to the driver in the processed data for that lap number
-      processedData[i][driver.driver] = lap.time > 0 ? lap.time : null;
+      processedData[i][driver.driver] = lap.time < 999 ? lap.time : null;
     });
   });
 

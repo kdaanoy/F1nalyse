@@ -138,7 +138,7 @@ export default function Session({
         // Function to parse the time from the CSV file and convert it to seconds for simpler comparison of times
         const parseTime = (timeStr) => {
           if (!timeStr) {
-            return 0;
+            return 999;
           }
           const match = timeStr.match(/(\d+):(\d+):(\d+\.\d+)/);
           if (!match) return 99;
