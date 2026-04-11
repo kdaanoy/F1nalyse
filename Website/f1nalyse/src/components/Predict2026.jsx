@@ -13,7 +13,7 @@ export default function Predict2026({ activatePredict, close }) {
     // List of all the grand prix with their name, round and date
     const grandprixes = [{ name: "Australian Grand Prix", round: 1, date: "03/08/2026" },
     { name: "Chinese Grand Prix", round: 2, date: "03/14/2026" },
-    { name: "Japanese Grand Prix", round: 3, date: "04/29/2026" },
+    { name: "Japanese Grand Prix", round: 3, date: "03/29/2026" },
     { name: "Bahrain Grand Prix", round: 4, date: "04/12/2026" },
     { name: "Saudi Arabian Grand Prix", round: 5, date: "04/19/2026" },
     { name: "Miami Grand Prix", round: 6, date: "05/03/2026" },
