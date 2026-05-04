@@ -303,13 +303,16 @@ def get_driver_data(year):
                                 for index, row in dfresultsdrivers.iterrows():
                                     positions.append(row['Position'])
 
+                        # Calculate the average position of the driver in the last 3 and 5 races and for teammate
                         last3avg = []
                         last5avg = []
                         last3teammateavg = []
                         last5teammateavg = []
 
+                        # Fetch data from the last 5 sessions
                         previous_sessions5 = dfsession[(dfsession['Type'] == 'Race' ) & (dfsession['ID'] < session_id)]['ID'][-5:]
 
+                        # Do the same for the rest of the drivers
                         dfrestofdrivers = dfresults[(dfresults['SessionID'] == session_id) & (dfresults['Driver'] != driver)]
 
                         # Loop through all other drivers in the same race
@@ -329,12 +332,16 @@ def get_driver_data(year):
                                     teammate_name = row_other['Driver']
                                 
                         
+                        # Loop to fetch the average position of the driver and teammate
                         loop = 0
                         for index, row in dfsession.iterrows():
                             if row['ID'] in previous_sessions5:
+                                # Fetch results for driver and teammate
                                 dfresultsdrivers = dfresults[(dfresults['SessionID'] == row['ID']) & (dfresults['Driver'] == driver)]
                                 dfresultsteammate = dfresults[(dfresults['SessionID'] == row['ID']) & (dfresults['Driver'] == teammate_name)]
                                 loop += 1
+
+                                # Append positions
                                 for index, row in dfresultsdrivers.iterrows():
                                     last5avg.append(row['Position'])
                                     if (loop >= 3):
@@ -346,6 +353,7 @@ def get_driver_data(year):
                                         last3teammateavg.append(row['Position'])
 
 
+                        # Calculate the average position given they have participated otherwise set it to 10 for default
                         last3avg = sum(last3avg) / len(last3avg) if len(last3avg) > 0 else 10
                         last5avg = sum(last5avg) / len(last5avg) if len(last5avg) > 0 else 10
                         last3teammateavg = sum(last3teammateavg) / len(last3teammateavg) if len(last3teammateavg) > 0 else 10
