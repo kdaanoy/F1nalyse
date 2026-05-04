@@ -14,8 +14,8 @@ export default function Predict2026({ activatePredict, close }) {
     const grandprixes = [{ name: "Australian Grand Prix", round: 1, date: "03/08/2026" },
     { name: "Chinese Grand Prix", round: 2, date: "03/14/2026" },
     { name: "Japanese Grand Prix", round: 3, date: "03/29/2026" },
-    { name: "Bahrain Grand Prix", round: 4, date: "04/12/2026" },
-    { name: "Saudi Arabian Grand Prix", round: 5, date: "04/19/2026" },
+    { name: "Bahrain Grand Prix", round: 4, date: "04/12/2029" },
+    { name: "Saudi Arabian Grand Prix", round: 5, date: "04/19/2029" },
     { name: "Miami Grand Prix", round: 6, date: "05/03/2026" },
     { name: "Grand Prix du Canada", round: 7, date: "05/24/2026" },
     { name: "Grand Prix de Monaco", round: 8, date: "06/07/2026" },
@@ -57,7 +57,7 @@ export default function Predict2026({ activatePredict, close }) {
     useEffect(() => {
 
         // Fetch the data from the Circuit csv file and parse it using PapaParse
-        fetch("/data/Circuit.csv").then((res) => res.text())
+        fetch("/data/Circuit.csv").then((response) => response.text())
             .then((data) => {
 
                 // Create a list of the circuit names from the grand prix list using the map function
@@ -96,7 +96,7 @@ export default function Predict2026({ activatePredict, close }) {
 
         // Fetch the data from the Team csv file and parse it using PapaParse
         fetch("/data/Team.csv")
-            .then((res) => res.text())
+            .then((response) => response.text())
             .then((data) => {
                 const result = Papa.parse(data, { header: true, skipEmptyLines: true }).data;
 
@@ -143,7 +143,7 @@ export default function Predict2026({ activatePredict, close }) {
             return;
 
         // Fetch the data from the prediction csv file
-        fetch(`/data/race${gpprediction}_predictions.csv`).then((res) => res.text())
+        fetch(`/data/race${gpprediction}_predictions.csv`).then((response) => response.text())
             .then((data) => {
 
                 // Parse the data using PapaParse and set the prediction data

@@ -124,7 +124,7 @@ export default function Navbar({
         setLoading(true);
 
         // fetch(`/data/Session.csv`)
-        //   .then((res) => res.text())
+        //   .then((response) => response.text())
         //   .then((csv) => {
         //     const cleanCsv = csv
         //       .replace(/\r\n/g, "\n")
@@ -136,7 +136,7 @@ export default function Navbar({
 
         // Fetch the Session csv file and parse the data to filter out the sessions for the active year
         fetch(`/data/Session.csv`)
-            .then((res) => res.text())
+            .then((response) => response.text())
             .then((csv) => {
                 // Using the PapaParse library to parse the csv data
                 const parsed = Papa.parse(csv, { header: true });
@@ -158,7 +158,7 @@ export default function Navbar({
 
                 // Fetch each individual circuit from the Circuit csv file and retrieve the circuits for the current year
                 fetch(`/data/Circuit.csv`)
-                    .then((res) => res.text())
+                    .then((response) => response.text())
                     .then((csv) => {
                         // Using the PapaParse library to parse the csv data
                         const circuitParsed = Papa.parse(csv, { header: true });
@@ -195,7 +195,7 @@ export default function Navbar({
 
         // Fetch the Circuit csv file to retrieve the circuit ID for the active GP
         fetch(`/data/Circuit.csv`)
-            .then((res) => res.text())
+            .then((response) => response.text())
             .then((csv) => {
                 // Using the PapaParse library to parse the csv data
                 const parsed = Papa.parse(csv, { header: true });
@@ -207,7 +207,7 @@ export default function Navbar({
 
                 // Fetch the Session csv file and filter the sessions to retrieve the sessions for the active GP and year using the CircuitID
                 fetch(`/data/Session.csv`)
-                    .then((res) => res.text())
+                    .then((response) => response.text())
                     .then((csv) => {
                         // Using the PapaParse library to parse the csv data
                         const sessionParsed = Papa.parse(csv, { header: true });
@@ -225,7 +225,7 @@ export default function Navbar({
 
                         // Ge the distinct sessions for the active GP
                         const distinctSessions = [
-                            ...new Set(gpSessions.map((r) => r.Type)),
+                            ...new Set(gpSessions.map((row) => row.Type)),
                         ];
 
                         // Sort the sessions based on their order number in the sessionOrder mapping and if their number is not in the mapping then

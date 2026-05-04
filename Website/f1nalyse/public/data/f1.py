@@ -327,7 +327,6 @@ def get_driver_data(year):
                                 # Check if the other driver is in the same team
                                 if other_team_name == team.iloc[0]:
                                     teammate_name = row_other['Driver']
-                                    print(f"Driver: {driver}, Teammate: {teammate_name}")
                                 
                         
                         loop = 0
@@ -336,8 +335,6 @@ def get_driver_data(year):
                                 dfresultsdrivers = dfresults[(dfresults['SessionID'] == row['ID']) & (dfresults['Driver'] == driver)]
                                 dfresultsteammate = dfresults[(dfresults['SessionID'] == row['ID']) & (dfresults['Driver'] == teammate_name)]
                                 loop += 1
-                                print("Loop", loop)
-                                print("ID:", row['ID'])
                                 for index, row in dfresultsdrivers.iterrows():
                                     last5avg.append(row['Position'])
                                     if (loop >= 3):
@@ -350,13 +347,9 @@ def get_driver_data(year):
 
 
                         last3avg = sum(last3avg) / len(last3avg) if len(last3avg) > 0 else 10
-                        print(last3avg)
                         last5avg = sum(last5avg) / len(last5avg) if len(last5avg) > 0 else 10
-                        print(last5avg)
                         last3teammateavg = sum(last3teammateavg) / len(last3teammateavg) if len(last3teammateavg) > 0 else 10
-                        print(last3teammateavg)
                         last5teammateavg = sum(last5teammateavg) / len(last5teammateavg) if len(last5teammateavg) > 0 else 10
-                        print(last5teammateavg)
 
                         for index, row in dfresults.iterrows():
                             if row['SessionID'] == session_id-1 and row['Driver'] == driver:
@@ -373,12 +366,10 @@ def get_driver_data(year):
                             last3avg = 10
                         else:
                             is_rookie = 0
-                        print(driver)
 
                         # Use a try exception block to check the team of the driver in the previous season
                         try:    
                             teamID = dfdrivers[(dfdrivers['DriverName'] == driver) & (dfdrivers['Year'] == int(year))].iloc[0]['TeamID']
-                            print(teamID)
                             team = dfteams[dfteams['ID'] == teamID].head()['TeamName']
                         except:
                             team = pd.Series(["Unknown"])
@@ -387,15 +378,23 @@ def get_driver_data(year):
                         career_positions = []
                         dnf = 0
 
+                        dnfStatus = False
+
                         # Loop through the sessions again to retrieve the positions for all drivers
                         for index, row in dfsession.iterrows():
                             if row['Type'] == 'Race' and row['ID'] <= session_id:
+                                print(row['ID'])
                                 dfresultsdrivers = dfresults[(dfresults['SessionID'] == row['ID']) & (dfresults['Driver'] == driver)]
-                                for index, row in dfresultsdrivers.iterrows():
-                                    career_positions.append(row['Position'])
-                                    if str(row['TimeGap']).strip() == "":
-                                        print(row['TimeGap']) 
+                                for index, row2 in dfresultsdrivers.iterrows():
+                                    career_positions.append(row2['Position'])
+                                    if pd.isna(row2['TimeGap']):
                                         dnf += 1
+                                        print(row['Type'], row['ID'])
+
+                                        # If the session is the most recent race and the driver did not finish, then set the dnf status to True
+                                        if row['ID'] == session_id :
+                                            dnfStatus = True
+                                            print(dnfStatus)
                                         
                         # Calculate the career average position of the driver if the driver has participated
                         career_average = sum(career_positions) / len(career_positions) if len(career_positions) > 0 else 10
@@ -403,25 +402,27 @@ def get_driver_data(year):
                         # Calculate the wcc position of the drivers team last year
                         last_year_team_wcc = dfwcc[(dfwcc['Year'] == int(year) - 1) & (dfwcc['Team'] == team.iloc[0])]    
 
-                        # Append the data for that driver
-                        data.append({
-                            "Driver": driver,
-                            "Circuit": circuit.iloc[0],
-                            "TrackLengthKm": track_length.iloc[0],
-                            "NumCorners": num_corners.iloc[0],
-                            "IsStreetCircuit": is_street_circuit.iloc[0],
-                            "isRookie": is_rookie,
-                            "Team": team.iloc[0],
-                            "QualifyingPosition": qualifyingpos,
-                            "Last3Avg": last3avg,
-                            "Last5Avg": last5avg,
-                            "TeammateLast3Avg": last3teammateavg,
-                            "TeammateLast5Avg": last5teammateavg,
-                            "Average_Last_Season": average_last_season,
-                            "Career_Average": career_average,
-                            "DNFRate": dnf/len(career_positions),
-                            "LastYrTeamWCC": last_year_team_wcc.iloc[0]['Position'] if not last_year_team_wcc.empty else 10,
-                            "Position": position})
+                        # Append the data for that driver if they did finish
+                        if dnfStatus == False:
+                            # Append the data for that driver
+                            data.append({
+                                "Driver": driver,
+                                "Circuit": circuit.iloc[0],
+                                "TrackLengthKm": track_length.iloc[0],
+                                "NumCorners": num_corners.iloc[0],
+                                "IsStreetCircuit": is_street_circuit.iloc[0],
+                                "isRookie": is_rookie,
+                                "Team": team.iloc[0],
+                                "QualifyingPosition": qualifyingpos,
+                                "Last3Avg": last3avg,
+                                "Last5Avg": last5avg,
+                                "TeammateLast3Avg": last3teammateavg,
+                                "TeammateLast5Avg": last5teammateavg,
+                                "Average_Last_Season": average_last_season,
+                                "Career_Average": career_average,
+                                "DNFRate": dnf/len(career_positions),
+                                "LastYrTeamWCC": last_year_team_wcc.iloc[0]['Position'] if not last_year_team_wcc.empty else 10,
+                                "Position": position})
         else:
             continue
                     

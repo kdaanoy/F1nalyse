@@ -41,12 +41,12 @@ export default function Session({
 
     // Promise.all fetches all the CSV files needed for the session data and parses them using Papaparse
     Promise.all([
-      fetch("/data/Circuit.csv").then((res) => res.text()),
-      fetch("/data/Session.csv").then((res) => res.text()),
-      fetch("/data/Results.csv?t=" + Date.now()).then((res) => res.text()),
-      fetch("/data/Drivers.csv").then((res) => res.text()),
-      fetch("/data/Laps.csv").then((res) => res.text()),
-      fetch("/data/Team.csv").then((res) => res.text()),
+      fetch("/data/Circuit.csv").then((response) => response.text()),
+      fetch("/data/Session.csv").then((response) => response.text()),
+      fetch("/data/Results.csv").then((response) => response.text()),
+      fetch("/data/Drivers.csv").then((response) => response.text()),
+      fetch("/data/Laps.csv").then((response) => response.text()),
+      fetch("/data/Team.csv").then((response) => response.text()),
     ]).then(
       async ([
         circuitCsv,
@@ -108,10 +108,10 @@ export default function Session({
         // and the team information. Then return the position, the drivers abbreviation code, team name, colour, gap and true or false for 
         // the background colour 
         const filteredResults = allResults
-          .filter((r) => r.SessionID?.toString() === session.ID?.toString())
+          .filter((row) => row.SessionID?.toString() === session.ID?.toString())
           .map((r, i) => {
             const driverInfo = allDrivers.find(
-              (d) => d.DriverName === r.Driver && safeYear === d.Year,
+              (driver) => driver.DriverName === r.Driver && safeYear === driver.Year,
             );
 
             const teamInfo = driverInfo
@@ -158,7 +158,7 @@ export default function Session({
 
         // Create a map of driver IDs and their corresponding information 
         const driverMap = Object.fromEntries(
-          allDrivers.map((d) => [d.ID.toString(), d]),
+          allDrivers.map((driver) => [driver.ID.toString(), driver]),
         );
 
         // Store the data for the tyre stints for each driver
@@ -166,7 +166,7 @@ export default function Session({
 
         // Create a map of each driver name, position and team colour for the session 
         const driverPositionMap = Object.fromEntries(
-          filteredResults.map((r) => [r.driver, r.pos, r.color]),
+          filteredResults.map((row) => [row.driver, row.pos, row.color]),
         );
 
         // Loop through the laps for the session and for each lap
@@ -203,7 +203,7 @@ export default function Session({
             driver,
             laps: laps.sort((a, b) => a.lap - b.lap),
             color:
-              filteredResults.find((r) => r.driver === driver)?.color ||
+              filteredResults.find((row) => row.driver === driver)?.color ||
               "white",
           }))
           .sort((a, b) => {
@@ -381,7 +381,7 @@ export default function Session({
             // Catch errors 
           } catch (error) {
             // For debugging in console
-            console.error("Error fetching from OpenF1 API:", error);
+            console.error("OpenF1 API Error:", error);
 
             // Return default driver information 
             return {
