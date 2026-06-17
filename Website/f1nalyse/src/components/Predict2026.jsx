@@ -14,7 +14,7 @@ export default function Predict2026({ activatePredict, close }) {
     const grandprixes = [{ name: "Australian Grand Prix", round: 1, date: "03/08/2026" },
     { name: "Chinese Grand Prix", round: 2, date: "03/14/2026" },
     { name: "Japanese Grand Prix", round: 3, date: "03/29/2026" },
-    { name: "Miami Grand Prix", round: 4, date: "09/03/2026" },
+    { name: "Miami Grand Prix", round: 4, date: "05/03/2026" },
     { name: "Grand Prix du Canada", round: 5, date: "09/24/2026" },
     { name: "Grand Prix de Monaco", round: 6, date: "09/07/2026" },
     { name: "Barcelona-Catalunya Grand Prix", round: 7, date: "09/14/2026" },
