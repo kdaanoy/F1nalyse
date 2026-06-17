@@ -477,6 +477,8 @@ def set_2026_features(city, country):
 
         # Loops through the circuits table to retrieve the information about the circuit
         for index, row in dfcircuit.iterrows():
+            if country == "United States":
+                country = "USA"
             if row['Country'] == country and row['City'] == city:
                 circuit_id = row['ID']
                 circuit = row['Name']
@@ -630,7 +632,7 @@ def train(city, country):
     race1['Position'] = predictions
     race1 = race1.sort_values(by="Position")
     print(race1)
-    race1.to_csv("race2_predictions.csv", index=False)
+    race1.to_csv("race" + str(round) + "_predictions.csv", index=False)
 
     # Evaluate the error of the model
     y_pred = grid_search.best_estimator_.predict(X_test)
@@ -646,17 +648,17 @@ def get_city_country(round):
 # store_data(1)
 # train("Melbourne", "Australia")
 
-# if __name__ == "__main__":
-#     action = sys.argv[1]
+if __name__ == "__main__":
+    action = sys.argv[1]
 
-#     if action == "storeData":
-#         round = int(sys.argv[2])
-#         store_data(round)
-#     elif action == "updateData":
-#         get_driver_data(2026).to_csv("driver_data.csv", index=False, mode = "a", header = False)
-#     elif action == "train":
-#         round = int(sys.argv[2])
-#         city, country = get_city_country(round)
-#         train(city, country)
+    if action == "storeData":
+        round = int(sys.argv[2])
+        store_data(round)
+    elif action == "updateData":
+        get_driver_data(2026).to_csv("driver_data.csv", index=False, mode = "a", header = False)
+    elif action == "train":
+        round = int(sys.argv[2])
+        city, country = get_city_country(round)
+        train(city, country)
 
-train("Suzuka", "Japan")    
+# train("Suzuka", "Japan")    
