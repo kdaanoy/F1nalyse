@@ -477,8 +477,6 @@ def set_2026_features(city, country):
 
         # Loops through the circuits table to retrieve the information about the circuit
         for index, row in dfcircuit.iterrows():
-            if country == "United States":
-                country = "USA"
             if row['Country'] == country and row['City'] == city:
                 circuit_id = row['ID']
                 circuit = row['Name']
@@ -488,6 +486,10 @@ def set_2026_features(city, country):
                 break
             else:
                 circuit_id = None
+                circuit = "Unknown"
+                track_length = 0
+                num_corners = 0
+                is_street_circuit = 0
 
         if driver == "Sergio Pérez":
             driver = "Sergio Perez"
@@ -642,6 +644,11 @@ def get_city_country(round):
     raceSchedule = fastf1.get_event(2026, round)
     city = raceSchedule['Location']
     country = raceSchedule['Country']
+    print(city, country)
+    if country == "United States":
+        country = "USA"
+    if city == "Miami Gardens":
+        city = "Miami"
     
     return city, country
 
