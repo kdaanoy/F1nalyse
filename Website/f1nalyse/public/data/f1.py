@@ -646,17 +646,17 @@ def get_city_country(round):
 # store_data(1)
 # train("Melbourne", "Australia")
 
-if __name__ == "__main__":
-    action = sys.argv[1]
+# if __name__ == "__main__":
+#     action = sys.argv[1]
 
-    if action == "storeData":
-        round = int(sys.argv[2])
-        store_data(round)
-    elif action == "updateData":
-        get_driver_data(2026).to_csv("driver_data.csv", index=False, mode = "a", header = False)
-    elif action == "train":
-        round = int(sys.argv[2])
-        city, country = get_city_country(round)
-        train(city, country)
+#     if action == "storeData":
+#         round = int(sys.argv[2])
+#         store_data(round)
+#     elif action == "updateData":
+#         get_driver_data(2026).to_csv("driver_data.csv", index=False, mode = "a", header = False)
+#     elif action == "train":
+#         round = int(sys.argv[2])
+#         city, country = get_city_country(round)
+#         train(city, country)
 
-# train("Suzuka", "Japan")    
+train("Suzuka", "Japan")    
