@@ -118,6 +118,7 @@ These results indicate that the model generalises well to unseen data while main
 
 ## Project Structure
 
+```text
 F1nalyse/
 │
 ├── Data/
@@ -142,6 +143,7 @@ F1nalyse/
     ├── Data Collection
     ├── Data Processing
     └── Model Training
+```
 
 ---
 
